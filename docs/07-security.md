@@ -8,7 +8,7 @@ No confirmed SQL injection, unauthorized analytics read, or reflected script exe
 
 ## Actionable deployment limitations
 
-- Analytics POST rate limiting currently resides in process memory. Separate serverless instances do not share its counters, so concurrency or instance replacement can exceed the apparent 30-event quota. Configure a shared ingestion quota or a verified edge rate limit before relying on this control against sustained storage abuse. Public analytics remains untrusted and can be fabricated by non-browser clients; never use it for billing or authorization.
+- Analytics POST uses a PostgreSQL-backed per-client quota in addition to the per-process limit. Database concurrency and trusted forwarding headers still require production verification; distributed clients can still generate traffic, so edge controls and retention remain necessary. Public analytics remains untrusted and can be fabricated by non-browser clients; never use it for billing or authorization.
 - Resolved during review: production/Vercel public writes now fail closed with a generic 503 when `IP_HASH_SALT` is absent. Set a strong, private salt; weak salts still permit enumeration of IPv4 hashes if stored hashes leak. Hashed client identifiers and contact details need a retention/deletion policy.
 - Set `APP_ORIGIN` to the deployed HTTPS origin and keep `ANALYTICS_ADMIN_TOKEN` and `DATABASE_URL` outside browser-exposed `VITE_` variables. The Origin check deliberately allows clients without Origin and is not bot authentication. Configure database TLS and least-privilege access according to the chosen provider.
 
