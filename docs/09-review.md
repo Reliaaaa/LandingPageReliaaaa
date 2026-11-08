@@ -14,3 +14,8 @@ Decision: suitable for local review; production readiness remains conditional. T
 | Technical lead | Keep deployment conditional on resolved acceptance gaps and operational verification. | Designer fixes and local browser QA resolve the reported frontend gaps. Successful database operations, production service configuration, deployment checks, and analytics abuse controls still require verification before release. |
 
 The public analytics stream is untrusted telemetry. Its event counts must not determine authorization or billing. Contact success for a filled honeypot is intentionally synthetic and stores no message; ordinary valid submissions succeed only after the database commit.
+
+## Follow-up — 2026-11-09
+
+Neon Free was provisioned and connected; the schema and real PostgreSQL contact/concurrent-quota tests passed. Preview API contact and analytics returned 201 with test records removed. Production remains conditional on retention automation, browser accessibility and responsive verification, and the normal review and release process.
+
