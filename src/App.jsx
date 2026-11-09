@@ -39,6 +39,32 @@ export default function App() {
     return () => window.removeEventListener('keydown', close);
   }, [menuOpen]);
   useEffect(() => { if (activeProject) dialogRef.current?.showModal(); }, [activeProject]);
+  useEffect(() => {
+    if (intro || reducedMotion || window.matchMedia('(prefers-reduced-motion: reduce)').matches || !Element.prototype.animate) return;
+    const targets = document.querySelectorAll('.hero-copy .eyebrow, .hero-copy h1, .hero-intro, .portrait-stage, .hero-buttons, .hero-bottom');
+    const animations = Array.from(targets, (element, index) => element.animate(
+      [{ opacity: 0.15, transform: 'translateY(24px)' }, { opacity: 1, transform: 'translateY(0)' }],
+      { duration: 620 + index * 100, easing: 'cubic-bezier(.22,1,.36,1)' },
+    ));
+    return () => animations.forEach(animation => animation.cancel());
+  }, [intro, reducedMotion]);
+  useEffect(() => {
+    if (reducedMotion || window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window) || !Element.prototype.animate) return;
+    const animations = [];
+    const observer = new IntersectionObserver(entries => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        animations.push(entry.target.animate(
+          [{ opacity: 0.65, transform: 'translateY(22px)' }, { opacity: 1, transform: 'translateY(0)' }],
+          { duration: 720, easing: 'cubic-bezier(.22,1,.36,1)' },
+        ));
+        observer.unobserve(entry.target);
+      }
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.about-content, .experience-inner > div:last-child, .section-heading, .project-card, .contact-copy, .contact-form-wrap').forEach(element => observer.observe(element));
+    return () => { observer.disconnect(); animations.forEach(animation => animation.cancel()); };
+  }, [reducedMotion]);
+
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -70,7 +96,7 @@ export default function App() {
     <main id="main">
       <section id="home" className="hero section-wrap">
         <div className="hero-copy"><div className="eyebrow">Informatics student · Surabaya</div><h1>Varellio Louis<br /><span>Tinangon.</span></h1><p className="hero-intro">Exploring technology, creative media, and community.<br />Informatics student at Petra Christian University.</p></div>
-        <div className="portrait-stage"><div className="portrait-halo" aria-hidden="true" /><div className="portrait-placeholder"><span aria-hidden="true">◉</span><p>Profile photo placeholder</p><small>Awaiting a portrait supplied by Varellio</small></div></div>
+        <div className="portrait-stage"><div className="portrait-halo" aria-hidden="true" /><img className="portrait-photo" src="/varellio-portrait.png" alt="Varellio Louis Tinangon" width="1024" height="1536" fetchPriority="high" /></div>
         <div className="hero-buttons"><a href="#about" className="button button-dark">Explore my interests <ArrowDown size={17} /></a><a className="text-link" href={linkedin} target="_blank" rel="noreferrer">Connect on LinkedIn <ArrowUpRight size={17} /></a></div>
         <div className="hero-bottom"><span>Technology · Creativity · Community</span><a href="#about">Scroll to discover <ArrowDown size={16} /></a></div>
       </section>
