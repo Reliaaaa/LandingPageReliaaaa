@@ -11,3 +11,20 @@
 [data-theme='light'] h2 span,[data-theme='light'] .hero h1 span{color:#386578}[data-theme='light'] .section-index,[data-theme='light'] .eyebrow{color:#765100}[data-theme='light'] .timeline-row>p:first-child{color:#765100}[data-theme='light'] .text-link,[data-theme='light'] .underlined-link,[data-theme='light'] .linkedin-link{color:#fff}[data-theme='light'] .project-card{color:#fff}[data-theme='light'] .work-section .section-heading p{color:#d4e4e9}[data-theme='light'] .work-section h2{color:#fff}[data-theme='light'] .work-section h2 span{color:#c2dfeb}[data-theme='light'] .work-section .section-index{color:#eac16b}
 .nav-links[hidden]{display:none!important}
 
+/* Motion remains an enhancement: the static content is always present. */
+@media (prefers-reduced-motion: no-preference) {
+  .ambient-bg::before { animation-duration: 14s; opacity: .35; }
+  .ambient-bg::after { animation-duration: 18s; opacity: .3; }
+  .portrait-halo::before { animation: orbit-one 18s linear infinite; }
+  .portrait-halo::after { animation: orbit-two 24s linear infinite; }
+  .portrait-halo { animation: halo-breathe 7s ease-in-out infinite alternate; }
+  .project-card { transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease; }
+  .project-card:hover, .project-card:focus-visible { transform: translateY(-5px); border-color: #eac16b; box-shadow: 0 18px 36px #00131d66; }
+  .button, .text-link, .underlined-link, .linkedin-link { transition: transform .18s ease, background-color .18s ease; }
+  .button:active { transform: scale(.98); }
+  @keyframes orbit-one { from { transform: rotate(-20deg) scaleY(.6); } to { transform: rotate(340deg) scaleY(.6); } }
+  @keyframes orbit-two { from { transform: rotate(25deg) scaleY(.7); } to { transform: rotate(-335deg) scaleY(.7); } }
+  @keyframes halo-breathe { from { opacity: .7; transform: scale(.94); } to { opacity: 1; transform: scale(1.06); } }
+}
+
+.portrait-photo{position:relative;z-index:1;display:block;width:auto;height:100%;max-width:100%;object-fit:contain;filter:drop-shadow(0 18px 22px rgba(0,0,0,.28))}
