@@ -7,3 +7,5 @@ Apply [`server/schema.sql`](../server/schema.sql) to PostgreSQL before using the
 `analytics_events` stores an identity primary key, allowlisted event name, sanitized pathname, and timestamp. A creation-time index supports the 30-day aggregation query. This schema stores no cookies, raw IP addresses, user agents, or visitor identifiers.
 
 Only trusted operators should access contact records. There is deliberately no public message-list endpoint. Configure verified TLS, encrypted provider backups, least-privilege runtime credentials, and a documented retention/deletion policy for your deployment. Apply future migrations explicitly and back up before destructive schema changes.
+
+`analytics_rate_limits` stores a salted client hash, window start and count for the shared one-minute quota. Before release, configure a scheduled retention job to delete rows with `window_start < now() - interval '1 day'`; the table otherwise grows over time. Reapply the idempotent schema before enabling this version.

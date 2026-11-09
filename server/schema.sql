@@ -15,3 +15,10 @@ CREATE TABLE IF NOT EXISTS analytics_events (
   created_at timestamptz NOT NULL DEFAULT now()
 );
 CREATE INDEX IF NOT EXISTS analytics_events_created_idx ON analytics_events (created_at);
+
+-- Hashes are operational rate-limit data, separate from anonymous events.
+CREATE TABLE IF NOT EXISTS analytics_rate_limits (
+  client_hash char(64) PRIMARY KEY,
+  window_start timestamptz NOT NULL,
+  count integer NOT NULL CHECK (count > 0)
+);

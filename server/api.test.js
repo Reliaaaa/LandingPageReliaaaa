@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import contact from '../api/contact.js';
-import analytics from '../api/analytics.js';
+import analytics, { sharedQuota } from '../api/analytics.js';
 
 let sequence = 0;
 function request(body, overrides = {}) {
@@ -29,6 +29,14 @@ test('unsupported methods publish allowed methods', async () => {
 test('analytics summary requires a secret bearer token', async () => {
   const res = await call(analytics, request({}, { method: 'GET' }));
   assert.equal(res.statusCode, 401);
+});
+test('shared analytics quota uses the database result and parameterizes the client hash', async () => {
+  const calls = [];
+  const db = { async query(sql, params) { calls.push({ sql, params }); return { rowCount: calls.length === 1 ? 1 : 0 }; } };
+  assert.equal(await sharedQuota(db, 'client-hash'), true);
+  assert.equal(await sharedQuota(db, 'client-hash'), false);
+  assert.match(calls[0].sql, /ON CONFLICT \(client_hash\) DO UPDATE/);
+  assert.deepEqual(calls[0].params, ['client-hash']);
 });
 test('analytics rejects unapproved events and paths containing query data', async () => {
   for (const body of [{ event: 'unknown', path: '/' }, { event: 'page_view', path: '/?email=private' }]) {
