@@ -31,6 +31,7 @@ export default function App() {
   const dialogRef = useRef(null);
   const photoSectionRef = useRef(null);
   const photoRailRef = useRef(null);
+  const lenisRef = useRef(null);
 
   useLayoutEffect(() => {
     const previous = window.history.scrollRestoration;
@@ -47,9 +48,18 @@ export default function App() {
     return () => { window.cancelAnimationFrame(frame); instance?.destroy(); };
   }, []);
   useEffect(() => {
-    if (intro || reducedMotion || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const lenis = new Lenis({ autoRaf: true, anchors: { offset: -95 }, syncTouch: false });
-    return () => lenis.destroy();
+    if (reducedMotion || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const lenis = new Lenis({ anchors: { offset: -95 }, syncTouch: false });
+    lenis.stop();
+    lenisRef.current = lenis;
+    lenis.on('scroll', ScrollTrigger.update);
+    const tick = time => lenis.raf(time * 1000);
+    gsap.ticker.add(tick);
+    return () => { gsap.ticker.remove(tick); lenis.destroy(); lenisRef.current = null; };
+  }, [reducedMotion]);
+  useEffect(() => {
+    if (intro) lenisRef.current?.stop();
+    else lenisRef.current?.start();
   }, [intro, reducedMotion]);
   useEffect(() => {
     if (!intro) return;
@@ -65,15 +75,15 @@ export default function App() {
     return () => window.clearTimeout(timer);
   }, [intro]);
   useEffect(() => { if (reducedMotion) { const timer = window.setTimeout(() => setIntro(false), 0); return () => window.clearTimeout(timer); } }, [reducedMotion]);
-  useEffect(() => {
-    if (intro || reducedMotion || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  useLayoutEffect(() => {
+    if (reducedMotion || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const media = gsap.matchMedia();
     media.add('(min-height: 600px)', () => {
       const overlap = ScrollTrigger.create({ trigger: '#home', start: 'bottom bottom', endTrigger: '#about', end: 'top top', pin: true, pinSpacing: false, invalidateOnRefresh: true });
       return () => overlap.kill();
     });
     return () => media.revert();
-  }, [intro, reducedMotion]);
+  }, [reducedMotion]);
   useEffect(() => {
     if (!menuOpen) return;
     const close = event => { if (event.key === 'Escape') { setMenuOpen(false); menuRef.current?.focus(); } };
@@ -164,7 +174,7 @@ export default function App() {
         <div className="hero-bottom"><a href="#about">Scroll to discover <ArrowDown size={16} /></a></div></div>
       </section>
       <section id="about" className="about-section section-wrap">
-        <div className="about-visual"><div className="section-index">01 / About</div><div className="about-photo-placeholder"><img className="about-photo" src="/about-portrait.png" alt="Varellio Louis Tinangon in formal attire" width="1080" height="1080" loading="lazy" /><span className="about-photo-orbit" aria-hidden="true" /><img className="about-photo about-photo-cutout" src="/about-portrait-cutout.png" alt="" aria-hidden="true" width="1080" height="1080" loading="lazy" /></div></div>
+        <div className="about-visual"><div className="section-index">01 / About</div><div className="about-photo-placeholder"><img className="about-photo" src="/about-portrait.png" alt="Varellio Louis Tinangon in formal attire" width="1080" height="1080" fetchPriority="low" /><span className="about-photo-orbit" aria-hidden="true" /><img className="about-photo about-photo-cutout" src="/about-portrait-cutout.png" alt="" aria-hidden="true" width="1080" height="1080" fetchPriority="low" /></div></div>
         <div className="about-content"><h2>The only way<br />to do great is to<br /><span>love what you do</span></h2><p className="about-quote-credit">— Steve Jobs.</p><div className="about-columns"><p>I’m Varellio, an Informatics student at Petra Christian University, exploring network and cyber security and digital transformation.</p><p>I enjoy discovering how technology, creative media, and entrepreneurship can come together to create meaningful ideas.</p></div><InterestOverlap /></div>
       </section>
       <section id="experience" className="experience-section section-wrap"><div className="experience-inner"><div className="section-index">02 / Experience</div><div><h2>A journey <span>in the making.</span></h2><div className="timeline">
