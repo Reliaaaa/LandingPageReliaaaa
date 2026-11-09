@@ -109,3 +109,9 @@ html.intro-lock,html.intro-lock body{overflow:hidden;overscroll-behavior:none}
 .photo-section.section-wrap{position:relative;z-index:2;margin-top:calc(-1 * clamp(48px,8vh,80px));background:linear-gradient(155deg,#102d42,#173f52 55%,#102d42)}
 .work-section.section-wrap{position:relative;z-index:3;margin-top:calc(-1 * clamp(48px,8vh,80px));background:linear-gradient(115deg,#0b2738,#134f5b);border-radius:24px 24px 0 0}
 }
+
+/* Keep the preceding section in place as the gallery covers it; let the next rise gradually. */
+@media(min-height:600px) and (prefers-reduced-motion:no-preference){
+.experience-section.section-wrap{position:relative;z-index:1;background:linear-gradient(155deg,#102d42,#153b4d)}
+.work-section.section-wrap{margin-top:calc(-1 * clamp(180px,35svh,420px))}
+}
