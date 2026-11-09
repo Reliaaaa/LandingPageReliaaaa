@@ -42,10 +42,10 @@ export default function App() {
   useEffect(() => { if (activeProject) dialogRef.current?.showModal(); }, [activeProject]);
   useEffect(() => {
     if (intro || reducedMotion || window.matchMedia('(prefers-reduced-motion: reduce)').matches || !Element.prototype.animate) return;
-    const targets = document.querySelectorAll('.hero-copy .eyebrow, .hero-copy h1, .portrait-stage, .hero-buttons, .hero-bottom');
+    const targets = ['.hero-copy h1', '.portrait-stage', '.hero-ground-text', '.hero-copy .eyebrow', '.hero-buttons', '.hero-bottom', '.site-header'].map(selector => document.querySelector(selector)).filter(Boolean);
     const animations = Array.from(targets, (element, index) => element.animate(
       [{ opacity: 0.15, transform: 'translateY(24px)' }, { opacity: 1, transform: 'translateY(0)' }],
-      { duration: 620 + index * 100, easing: 'cubic-bezier(.22,1,.36,1)' },
+      { duration: 620, delay: index * 110, fill: 'backwards', easing: 'cubic-bezier(.22,1,.36,1)' },
     ));
     return () => animations.forEach(animation => animation.cancel());
   }, [intro, reducedMotion]);
