@@ -54,3 +54,8 @@
 
 /* Keep the name behind the portrait and lift it slightly. */
 .hero-copy{z-index:1}.hero h1{position:relative;top:-10px}
+
+/* Constant-sized decorative type and an atmospheric opening transition. */
+.marquee-row-1{font-size:150px}.marquee-row-2{font-size:165px}.marquee-row-3{font-size:120px}.marquee-row-4{font-size:145px}
+.intro-screen{display:block;overflow:hidden;pointer-events:none;background:#102d42;animation:intro-through 700ms cubic-bezier(.55,0,.9,.45) 1350ms forwards}.intro-atmosphere{position:absolute;inset:-8%;overflow:hidden;background:radial-gradient(ellipse at 50% 48%,rgba(47,122,133,.42),transparent 62%),radial-gradient(ellipse at 10% 50%,rgba(55,177,184,.22),transparent 52%),linear-gradient(165deg,#102d42,#163f56 48%,#091e2b)}.intro-atmosphere .hero-marquee{inset:12% 0;opacity:.16}.intro-orbit{position:absolute;inset:8% 16%;border:1px solid #eac16b55;border-radius:50%;transform:rotate(-20deg) scaleY(.6)}.intro-orbit::after{content:'';position:absolute;inset:5%;border:1px solid #8bd1e255;border-radius:50%;transform:rotate(45deg)}@keyframes intro-through{to{opacity:0;transform:scale(2.2)}}
+@media(prefers-reduced-motion:reduce){.intro-screen{display:none;animation:none}}
