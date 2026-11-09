@@ -118,3 +118,6 @@ html.intro-lock,html.intro-lock body{overflow:hidden;overscroll-behavior:none}
 
 /* The gallery begins just right of center, then moves left with the page. */
 .photo-track{padding-inline-start:62vw}
+
+/* Begin the next section's overlap while the gallery is nearing its end. */
+@media(min-height:600px) and (prefers-reduced-motion:no-preference){.work-section.section-wrap{margin-top:calc(-1 * clamp(240px,50svh,600px))}}

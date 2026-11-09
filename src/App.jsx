@@ -111,7 +111,7 @@ export default function App() {
         trigger: section, start: 'top top',
         end: () => `+=${Math.max(distance() - leadDistance(), window.innerHeight)}`,
         pin: true, anticipatePin: 1, invalidateOnRefresh: true,
-        onUpdate: self => { rail.scrollLeft = leadDistance() + self.progress * (distance() - leadDistance()); setCut(Math.max(0, (self.progress - 0.88) / 0.12) * 15); },
+        onUpdate: self => { rail.scrollLeft = leadDistance() + self.progress * (distance() - leadDistance()); setCut(Math.max(0, (self.progress - 0.86) / 0.14) * 20); },
       });
       return () => { pinned.kill(); approach.kill(); previousLayer?.kill(); section.style.removeProperty('clip-path'); };
     });
