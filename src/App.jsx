@@ -93,7 +93,7 @@ export default function App() {
     <main id="main">
       <section id="home" className="hero section-wrap">
         <div className="hero-marquee" aria-hidden="true">{['Technology', 'Creative Media', 'Digital Transformation', 'Entrepreneurship'].map((word, i) => <div className={`marquee-row marquee-row-${i + 1}`} key={word}><div className="marquee-track"><span>{word} · {word} · </span><span>{word} · {word} · </span></div></div>)}</div>
-        <div className="hero-copy"><div className="eyebrow">Informatics student · Surabaya</div><h1>Varellio Louis<br /><span>Tinangon.</span></h1></div>
+        <div className="hero-copy"><div className="eyebrow">Informatics student · Surabaya</div><h1>Varellio Louis<br />{' '}<span>Tinangon.</span></h1></div>
         <div className="portrait-stage"><div className="portrait-halo" aria-hidden="true" /><img className="portrait-photo" src="/varellio-portrait.png" alt="Varellio Louis Tinangon" width="1024" height="1536" fetchPriority="high" /></div>
         <div className="hero-ground"><div className="hero-ground-text" aria-hidden="true">Technology · Creativity · Community</div><div className="hero-buttons"><a href="#about" className="button button-dark">Explore my interests <ArrowDown size={17} /></a><a className="text-link" href={linkedin} target="_blank" rel="noreferrer">Connect on LinkedIn <ArrowUpRight size={17} /></a></div>
         <div className="hero-bottom"><a href="#about">Scroll to discover <ArrowDown size={16} /></a></div></div>
