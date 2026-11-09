@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useReducedMotion } from 'framer-motion';
+import Lenis from 'lenis';
 import { ArrowDown, ArrowUpRight, ChevronDown, Menu, X } from 'lucide-react';
 
 const linkedin = 'https://www.linkedin.com/in/varellio-louis-tinangon-4172702a0/';
@@ -25,6 +26,11 @@ export default function App() {
   const dialogRef = useRef(null);
 
   useEffect(() => {
+    if (reducedMotion || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const lenis = new Lenis({ autoRaf: true, anchors: { offset: -95 }, syncTouch: false });
+    return () => lenis.destroy();
+  }, [reducedMotion]);
+  useEffect(() => {
     fetch('/api/analytics', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ event: 'page_view', path: window.location.pathname }) }).catch(() => {});
   }, []);
   useEffect(() => {
@@ -47,8 +53,8 @@ export default function App() {
       for (const entry of entries) {
         if (!entry.isIntersecting) continue;
         animations.push(entry.target.animate(
-          [{ opacity: 0.65, transform: 'translateY(22px)' }, { opacity: 1, transform: 'translateY(0)' }],
-          { duration: 720, easing: 'cubic-bezier(.22,1,.36,1)' },
+          [{ opacity: 0.9, transform: 'translateY(10px)' }, { opacity: 1, transform: 'translateY(0)' }],
+          { duration: 650, easing: 'cubic-bezier(.22,1,.36,1)' },
         ));
         observer.unobserve(entry.target);
       }
@@ -76,14 +82,14 @@ export default function App() {
   const closeMenuOnBlur = event => { if (!event.currentTarget.contains(event.relatedTarget)) setMenuOpen(false); };
   return <>
     <div className="ambient-bg" aria-hidden="true"><span /><span /><span /></div>
-    <a href="#main" className="skip-link" onClick={() => setIntro(false)}>Skip to content</a>
+    <a href="#main" className="skip-link" onClick={() => { setIntro(false); document.getElementById('main')?.focus({ preventScroll: true }); }}>Skip to content</a>
     <header className={intro ? "site-header is-intro" : "site-header"} onMouseEnter={() => setMenuOpen(true)} onMouseLeave={event => { if (!event.currentTarget.contains(document.activeElement)) setMenuOpen(false); }} onFocus={event => { if (!event.currentTarget.contains(event.relatedTarget) && event.target.matches(':focus-visible')) setMenuOpen(true); }} onBlur={closeMenuOnBlur}>
       <button ref={menuRef} className="notch-trigger" type="button" aria-label="Navigation menu" aria-expanded={menuOpen} aria-controls="main-nav" onClick={() => setMenuOpen(open => !open)}><Menu size={17} /><span>Menu</span><ChevronDown size={16} /></button>
       <nav id="main-nav" className={menuOpen ? 'nav-links is-open' : 'nav-links'} aria-label="Main navigation" hidden={!menuOpen}>
         <a href="#about" onClick={() => setMenuOpen(false)}>About</a><a href="#experience" onClick={() => setMenuOpen(false)}>Experience</a><a href="#work" onClick={() => setMenuOpen(false)}>Explorations</a><a href="#contact" onClick={() => setMenuOpen(false)}>Contact</a>
       </nav>
     </header>
-    <main id="main">
+    <main id="main" tabIndex={-1}>
       <section id="home" className={intro ? "hero section-wrap is-intro" : "hero section-wrap"}>
         <Marquee />
         <div className="hero-copy"><div className="eyebrow">Informatics student · Surabaya</div><h1>Varellio Louis<br />{' '}<span>Tinangon.</span></h1></div>
@@ -97,7 +103,7 @@ export default function App() {
       <section id="contact" className="contact-section section-wrap"><div className="contact-copy"><div className="section-index">04 / Say hello</div><h2>Good things start<br />with a <span>conversation.</span></h2><p>A question, an idea, or just a hello. There’s always room for a new connection.</p><a href={linkedin} className="linkedin-link" target="_blank" rel="noreferrer">Find me on LinkedIn <ArrowUpRight size={16} /></a></div><div className="contact-form-wrap"><form onSubmit={handleSubmit}><div className="form-row"><label>Your name<input name="name" autoComplete="name" placeholder="Your name" value={form.name} required minLength={2} maxLength={100} onChange={e => setForm({ ...form, name: e.target.value })} /></label><label>Email address<input name="email" type="email" autoComplete="email" placeholder="you@example.com" value={form.email} required maxLength={254} onChange={e => setForm({ ...form, email: e.target.value })} /></label></div><label>Message<textarea name="message" placeholder="Tell me a little about it…" rows={5} required minLength={10} maxLength={4000} value={form.message} onChange={e => setForm({ ...form, message: e.target.value })} /></label><div className="honeypot" aria-hidden="true"><label>Company<input name="company" tabIndex={-1} autoComplete="off" value={form.company} onChange={e => setForm({ ...form, company: e.target.value })} /></label></div><div className="form-footer"><span>Let’s see where it goes.</span><button className="button button-dark" type="submit" disabled={status.kind === 'sending'}>{status.kind === 'sending' ? 'Sending…' : 'Send a message'} <ArrowUpRight size={17} /></button></div><p className={`form-status ${status.kind}`} role="status" aria-live="polite">{status.message}</p></form></div></section>
     </main>
     <footer className="site-footer section-wrap"><span>© {new Date().getFullYear()} Varellio Louis Tinangon</span><a href={linkedin} target="_blank" rel="noreferrer">LinkedIn <ArrowUpRight size={14} /></a><a href="#home">Back to top ↑</a></footer>
-    <dialog ref={dialogRef} onCancel={closeProject} onClick={e => { if (e.target === e.currentTarget) closeProject(); }} className="project-dialog" aria-labelledby="project-title">{activeProject && <><button className="dialog-close" onClick={closeProject} aria-label="Close project"><X /></button><div className="eyebrow">CONCEPT {activeProject.number} / PLACEHOLDER</div><h2 id="project-title">{activeProject.title}</h2><p>{activeProject.description}</p><p>This is sample portfolio content; no completed project, client relationship, or result is claimed.</p><button className="button button-dark" onClick={closeProject}>Back to exploring</button></>}</dialog>
+    <dialog data-lenis-prevent ref={dialogRef} onCancel={closeProject} onClick={e => { if (e.target === e.currentTarget) closeProject(); }} className="project-dialog" aria-labelledby="project-title">{activeProject && <><button className="dialog-close" onClick={closeProject} aria-label="Close project"><X /></button><div className="eyebrow">CONCEPT {activeProject.number} / PLACEHOLDER</div><h2 id="project-title">{activeProject.title}</h2><p>{activeProject.description}</p><p>This is sample portfolio content; no completed project, client relationship, or result is claimed.</p><button className="button button-dark" onClick={closeProject}>Back to exploring</button></>}</dialog>
   </>;
 }
 
