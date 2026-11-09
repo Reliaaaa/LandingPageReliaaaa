@@ -9,6 +9,11 @@ const concepts = [
   { number: '03', title: 'Always in progress.', description: 'A space for an experiment or a personal exploration.', style: 'grid' },
 ];
 
+const marqueeWords = ['Technology', 'Creative Media', 'Digital Transformation', 'Entrepreneurship'];
+function Marquee() {
+  return <div className="hero-marquee" aria-hidden="true">{marqueeWords.map((word, i) => <div className={`marquee-row marquee-row-${i + 1}`} key={word}><div className="marquee-track"><span>{word} · {word} · </span><span>{word} · {word} · </span></div></div>)}</div>;
+}
+
 export default function App() {
   const reducedMotion = useReducedMotion();
   const [intro, setIntro] = useState(() => !window.matchMedia('(prefers-reduced-motion: reduce)').matches);
@@ -24,10 +29,8 @@ export default function App() {
   }, []);
   useEffect(() => {
     if (!intro) return;
-    const timer = window.setTimeout(() => setIntro(false), 1800);
-    const skip = event => { if (event.key === 'Escape') setIntro(false); };
-    window.addEventListener('keydown', skip);
-    return () => { window.clearTimeout(timer); window.removeEventListener('keydown', skip); };
+    const timer = window.setTimeout(() => setIntro(false), 2050);
+    return () => window.clearTimeout(timer);
   }, [intro]);
   useEffect(() => { if (reducedMotion) { const timer = window.setTimeout(() => setIntro(false), 0); return () => window.clearTimeout(timer); } }, [reducedMotion]);
   useEffect(() => {
@@ -82,7 +85,7 @@ export default function App() {
   const closeMenuOnBlur = event => { if (!event.currentTarget.contains(event.relatedTarget)) setMenuOpen(false); };
   return <>
     <div className="ambient-bg" aria-hidden="true"><span /><span /><span /></div>
-    {intro && <div className="intro-screen" role="region" aria-label="Introduction"><div className="intro-card"><div className="intro-mark" aria-hidden="true">✳</div><p>Logo placeholder</p><span>Varellio Louis Tinangon</span><button className="intro-skip" onClick={() => setIntro(false)}>Skip intro <ArrowUpRight size={16} /></button></div></div>}
+    {intro && <div className="intro-screen" aria-hidden="true"><div className="intro-atmosphere"><div className="intro-orbit" /><Marquee /></div></div>}
     <a href="#main" className="skip-link" onClick={() => setIntro(false)}>Skip to content</a>
     <header className="site-header" onMouseEnter={() => setMenuOpen(true)} onMouseLeave={event => { if (!event.currentTarget.contains(document.activeElement)) setMenuOpen(false); }} onFocus={event => { if (!event.currentTarget.contains(event.relatedTarget) && event.target.matches(':focus-visible')) setMenuOpen(true); }} onBlur={closeMenuOnBlur}>
       <button ref={menuRef} className="notch-trigger" type="button" aria-label="Navigation menu" aria-expanded={menuOpen} aria-controls="main-nav" onClick={() => setMenuOpen(open => !open)}><Menu size={17} /><span>Menu</span><ChevronDown size={16} /></button>
@@ -92,7 +95,7 @@ export default function App() {
     </header>
     <main id="main">
       <section id="home" className="hero section-wrap">
-        <div className="hero-marquee" aria-hidden="true">{['Technology', 'Creative Media', 'Digital Transformation', 'Entrepreneurship'].map((word, i) => <div className={`marquee-row marquee-row-${i + 1}`} key={word}><div className="marquee-track"><span>{word} · {word} · </span><span>{word} · {word} · </span></div></div>)}</div>
+        <Marquee />
         <div className="hero-copy"><div className="eyebrow">Informatics student · Surabaya</div><h1>Varellio Louis<br />{' '}<span>Tinangon.</span></h1></div>
         <div className="portrait-stage"><div className="portrait-halo" aria-hidden="true" /><img className="portrait-photo" src="/varellio-portrait.png" alt="Varellio Louis Tinangon" width="1024" height="1536" fetchPriority="high" /></div>
         <div className="hero-ground"><div className="hero-ground-text" aria-hidden="true">Technology · Creativity · Community</div><div className="hero-buttons"><a href="#about" className="button button-dark">Explore my interests <ArrowDown size={17} /></a><a className="text-link" href={linkedin} target="_blank" rel="noreferrer">Connect on LinkedIn <ArrowUpRight size={17} /></a></div>
