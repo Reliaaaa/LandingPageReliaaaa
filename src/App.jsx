@@ -41,7 +41,7 @@ export default function App() {
   useEffect(() => { if (activeProject) dialogRef.current?.showModal(); }, [activeProject]);
   useEffect(() => {
     if (intro || reducedMotion || window.matchMedia('(prefers-reduced-motion: reduce)').matches || !Element.prototype.animate) return;
-    const targets = document.querySelectorAll('.hero-copy .eyebrow, .hero-copy h1, .hero-intro, .portrait-stage, .hero-buttons, .hero-bottom');
+    const targets = document.querySelectorAll('.hero-copy .eyebrow, .hero-copy h1, .portrait-stage, .hero-buttons, .hero-bottom');
     const animations = Array.from(targets, (element, index) => element.animate(
       [{ opacity: 0.15, transform: 'translateY(24px)' }, { opacity: 1, transform: 'translateY(0)' }],
       { duration: 620 + index * 100, easing: 'cubic-bezier(.22,1,.36,1)' },
@@ -95,7 +95,7 @@ export default function App() {
     </header>
     <main id="main">
       <section id="home" className="hero section-wrap">
-        <div className="hero-copy"><div className="eyebrow">Informatics student · Surabaya</div><h1>Varellio Louis<br /><span>Tinangon.</span></h1><p className="hero-intro">Exploring technology, creative media, and community.<br />Informatics student at Petra Christian University.</p></div>
+        <div className="hero-copy"><div className="eyebrow">Informatics student · Surabaya</div><h1>Varellio Louis<br /><span>Tinangon.</span></h1></div>
         <div className="portrait-stage"><div className="portrait-halo" aria-hidden="true" /><img className="portrait-photo" src="/varellio-portrait.png" alt="Varellio Louis Tinangon" width="1024" height="1536" fetchPriority="high" /></div>
         <div className="hero-ground"><div className="hero-ground-text" aria-hidden="true">Technology · Creativity · Community</div><div className="hero-buttons"><a href="#about" className="button button-dark">Explore my interests <ArrowDown size={17} /></a><a className="text-link" href={linkedin} target="_blank" rel="noreferrer">Connect on LinkedIn <ArrowUpRight size={17} /></a></div>
         <div className="hero-bottom"><a href="#about">Scroll to discover <ArrowDown size={16} /></a></div></div>
