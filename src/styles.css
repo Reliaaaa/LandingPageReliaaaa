@@ -148,3 +148,4 @@ html.intro-lock,html.intro-lock body{overflow:hidden;overscroll-behavior:none}
 @font-face{font-family:'Portfolio SF Pro';src:url('/fonts/SFPRODISPLAYLIGHTITALIC.OTF') format('opentype');font-style:italic;font-weight:400;font-display:swap}
 @font-face{font-family:'Portfolio SF Pro';src:url('/fonts/SFPRODISPLAYSEMIBOLDITALIC.OTF') format('opentype');font-style:italic;font-weight:600;font-display:swap}
 body :not(.hero-name-first):not(.hero-name-a):not(.hero-name-last){font-family:'Portfolio SF Pro',sans-serif}
+.hero h1 .hero-name-first,.hero h1 .hero-name-a{font-family:'Portfolio SF Pro',sans-serif;font-style:italic;font-weight:600}
