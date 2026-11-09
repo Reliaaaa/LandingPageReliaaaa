@@ -119,8 +119,8 @@ export default function App() {
     const media = gsap.matchMedia();
     media.add('(min-height: 600px)', () => {
       const previous = section.previousElementSibling;
-      const previousLayer = previous && previous.getBoundingClientRect().height <= window.innerHeight
-        ? ScrollTrigger.create({ trigger: previous, start: 'top top', endTrigger: section, end: 'top top', pin: true, pinSpacing: false, invalidateOnRefresh: true })
+      const previousLayer = previous
+        ? ScrollTrigger.create({ trigger: previous, start: 'bottom bottom', endTrigger: section, end: 'top top', pin: true, pinSpacing: false, invalidateOnRefresh: true })
         : null;
       const distance = () => Math.max(0, rail.scrollWidth - rail.clientWidth);
       const leadDistance = () => Math.min(window.innerWidth * 0.08, distance() * 0.12);
