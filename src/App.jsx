@@ -75,6 +75,8 @@ export default function App() {
   useEffect(() => {
     if (reducedMotion || window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window) || !Element.prototype.animate) return;
     const animations = [];
+    const experience = document.getElementById('experience');
+    experience?.classList.add('experience-motion');
     const observer = new IntersectionObserver(entries => {
       for (const entry of entries) {
         if (!entry.isIntersecting) continue;
@@ -87,7 +89,7 @@ export default function App() {
       }
     }, { threshold: 0.12 });
     document.querySelectorAll('.about-content, .timeline-row, .section-heading, .photo-rail, .project-card, .contact-copy, .contact-form-wrap').forEach(element => observer.observe(element));
-    return () => { observer.disconnect(); animations.forEach(animation => animation.cancel()); };
+    return () => { observer.disconnect(); animations.forEach(animation => animation.cancel()); experience?.classList.remove('experience-motion'); experience?.querySelectorAll('.timeline-row.is-revealed').forEach(row => row.classList.remove('is-revealed')); };
   }, [reducedMotion]);
 
 
