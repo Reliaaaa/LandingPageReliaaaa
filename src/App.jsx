@@ -37,12 +37,12 @@ const momentPhotos = [
 ];
 const momentColumns = [
   { photos: [0, 1], width: 40, offset: 0 },
-  { photos: [3], width: 43, offset: 2 },
+  { photos: [6], width: 34, offset: 2 },
   { photos: [2, 9], width: 40, offset: 1 },
   { photos: [4], width: 44, offset: 0 },
   { photos: [7, null], width: 29, offset: 3 },
   { photos: [5], width: 42, offset: 1 },
-  { photos: [6], width: 34, offset: 2 },
+  { photos: [3], width: 43, offset: 2 },
   { photos: [8], width: 42, offset: 0 },
   { photos: [10], width: 26, offset: 2 },
   { photos: [null, null], width: 30, offset: 1 },
@@ -197,10 +197,10 @@ export default function App() {
         <article className="timeline-row"><p>Class of 2026</p><div><h3>Graduation Film Production Team</h3><p>Film Editor</p><p>Responsible for editing the graduation film.</p></div></article>
         <article className="timeline-row"><p>2025 – 2026</p><div><h3>Student Council Treasurer</h3><p>Frateran Catholic Senior High School, Surabaya</p><p>Managed event budgets, prepared financial reports, and supported the council’s financial planning.</p></div></article>
         <article className="timeline-row"><p>2025</p><div><h3>Frateran Cup Committee</h3><p>Fundraiser, Event Operator &amp; Treasurer</p><p>Contributed to fundraising, event operations, and financial management.</p></div></article>
+        <article className="timeline-row"><div><h3>Frateran Solve the Case (FSC) Committee</h3><p>Event Operator, Question Writer &amp; Supervisor</p><p>Supported event operations and contributed to preparing questions and supervising participants.</p></div></article>
         <article className="timeline-row"><p>2024 – 2025</p><div><h3>Student Council Social &amp; Community Relations Member</h3><p>Frateran Catholic Senior High School, Surabaya</p><p>Participated in community initiatives, fundraising, and production of the Suara Fratorian podcast.</p></div></article>
         <article className="timeline-row"><p>2024</p><div><h3>Suara Fratorian Podcast Production Committee</h3><p>Contributed to the production of the Suara Fratorian podcast.</p></div></article>
         <article className="timeline-row"><div><h3>Berbagi Takjil Ramadan Event</h3><p>Fundraiser</p><p>Contributed to fundraising for the Ramadan event.</p></div></article>
-        <article className="timeline-row"><div><h3>Frateran Solve the Case (FSC) Committee</h3><p>Event Operator, Question Writer &amp; Supervisor</p><p>Supported event operations and contributed to preparing questions and supervising participants.</p></div></article>
       </div><a className="underlined-link" href={linkedin} target="_blank" rel="noreferrer">View experience on LinkedIn <ArrowUpRight size={16} /></a></div></div></section>
       <section id="moments" ref={photoSectionRef} className="photo-section section-wrap"><div className="section-heading"><div><div className="section-index">03 / Moments</div><h2>Moments <span>in motion.</span></h2></div><p>Snapshots of moments shared along the way.</p></div><div className="photo-toolbar"><p>Scroll down to explore the gallery, or swipe through it. More photographs are coming soon.</p></div><div ref={photoRailRef} className="photo-rail" role="region" aria-label="Photo gallery; scroll horizontally" tabIndex={0}><div className="photo-track">{momentColumns.map((column, columnIndex) => <div className="photo-column" key={columnIndex} style={{ width: `clamp(140px, ${column.width}svh, 600px)`, '--photo-offset': `${column.offset}svh` }}>{column.photos.map((photoIndex, row) => { const photo = photoIndex === null ? null : momentPhotos[photoIndex]; return <div className={photo ? 'photo-placeholder photo-filled' : 'photo-placeholder'} key={row} style={photo ? { aspectRatio: photo.ratio } : { '--placeholder-height': `${row ? 27 : 20}svh` }}>{photo ? <img src={photo.src} alt={photo.alt} fetchPriority="low" /> : <><span>{String(columnIndex * 2 + row + 1).padStart(2, '0')}</span><p>PHOTO PLACEHOLDER</p><small>Coming soon</small></>}</div>; })}</div>)}</div></div></section>
       <section id="work" className="work-section section-wrap"><div className="section-heading"><div><div className="section-index">04 / Explorations</div><h2>Selected <span>possibilities.</span></h2></div><p>A space for ideas and what comes next.</p></div><div className="project-grid">{concepts.map(project => <button key={project.number} className="project-card" onClick={() => setActiveProject(project)} aria-label={`View concept placeholder ${project.number}: ${project.title}`}><div className={`project-art ${project.style}`}><span>EXPLORATION {project.number}</span><span className="concept-symbol" aria-hidden="true">{project.style === 'orbit' ? '◉' : project.style === 'type' ? '↗' : '✳'}</span><span className="placeholder-label">CONCEPT / PLACEHOLDER</span></div><div className="project-info"><span>Concept / Placeholder</span><h3>{project.title}</h3><p>Explore the idea <ArrowUpRight size={15} /></p></div></button>)}</div></section>
