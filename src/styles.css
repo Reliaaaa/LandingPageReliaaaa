@@ -149,3 +149,6 @@ html.intro-lock,html.intro-lock body{overflow:hidden;overscroll-behavior:none}
 @font-face{font-family:'Portfolio SF Pro';src:url('/fonts/SFPRODISPLAYSEMIBOLDITALIC.OTF') format('opentype');font-style:italic;font-weight:600;font-display:swap}
 body :not(.hero-name-first):not(.hero-name-a):not(.hero-name-last){font-family:'Portfolio SF Pro',sans-serif}
 .hero h1 .hero-name-first,.hero h1 .hero-name-a{font-family:'Portfolio SF Pro',sans-serif;font-style:italic;font-weight:600}
+
+.hero h1{top:-30px}
+@supports (-webkit-text-stroke:1px #fff){@media(prefers-reduced-motion:no-preference){.hero.is-intro h1{text-shadow:none}.hero.is-intro .hero-name-first,.hero.is-intro .hero-name-last{-webkit-text-stroke:1px #f1f5f7;animation:hero-name-fill 1.65s ease-in-out .7s both}@keyframes hero-name-fill{0%,25%{-webkit-text-fill-color:transparent}100%{-webkit-text-fill-color:#f1f5f7}}}}
