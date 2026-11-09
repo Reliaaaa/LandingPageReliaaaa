@@ -61,10 +61,10 @@ export default function App() {
     if (intro) lenisRef.current?.stop();
     else lenisRef.current?.start();
   }, [intro, reducedMotion]);
-  useEffect(() => {
-    if (!intro) return;
-    document.documentElement.classList.add('intro-lock');
-    return () => document.documentElement.classList.remove('intro-lock');
+  useLayoutEffect(() => {
+    document.documentElement.classList.toggle('intro-lock', intro);
+    document.documentElement.classList.toggle('scroll-ready', !intro);
+    return () => { document.documentElement.classList.remove('intro-lock', 'scroll-ready'); };
   }, [intro]);
   useEffect(() => {
     fetch('/api/analytics', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ event: 'page_view', path: window.location.pathname }) }).catch(() => {});

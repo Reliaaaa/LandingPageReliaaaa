@@ -152,8 +152,9 @@ body :not(.hero-name-first):not(.hero-name-a):not(.hero-name-last){font-family:'
 
 .hero h1{top:-30px}
 .hero h1 .hero-name-first .hero-name-letter,.hero h1 .hero-name-last .hero-name-letter{font-family:inherit;font-style:inherit;font-weight:inherit;color:inherit}
-@supports (-webkit-text-stroke:1px #fff){@media(prefers-reduced-motion:no-preference){.hero.is-intro h1{text-shadow:none}.hero.is-intro .hero-name-letter{-webkit-text-stroke:1px #f1f5f7;animation:hero-name-fill .75s ease-in-out both;animation-delay:calc(.5s + var(--letter-index) * 55ms)}@keyframes hero-name-fill{0%{-webkit-text-stroke-color:transparent;-webkit-text-fill-color:transparent}35%{-webkit-text-stroke-color:#f1f5f7;-webkit-text-fill-color:transparent}100%{-webkit-text-stroke-color:#f1f5f7;-webkit-text-fill-color:#f1f5f7}}}}
+@supports (-webkit-text-stroke:1px #fff){@media(prefers-reduced-motion:no-preference){.hero.is-intro .hero-name-letter{-webkit-text-stroke:1px #f1f5f7;animation:hero-name-fill .75s ease-in-out both;animation-delay:calc(.5s + var(--letter-index) * 55ms)}@keyframes hero-name-fill{0%{-webkit-text-stroke-color:transparent;-webkit-text-fill-color:transparent}35%{-webkit-text-stroke-color:#f1f5f7;-webkit-text-fill-color:transparent}100%{-webkit-text-stroke-color:#f1f5f7;-webkit-text-fill-color:#f1f5f7}}}}
 
 /* The About page slides over the complete hero without covering its controls. */
 .hero h1{top:-50px}.about-section.section-wrap{position:relative;z-index:2;isolation:isolate;border-top:0}.about-section::before{content:'';position:absolute;z-index:-1;top:0;bottom:0;left:50%;width:100vw;transform:translateX(-50%);border-radius:24px 24px 0 0;border-top:1px solid rgba(202,226,235,.22);background:radial-gradient(ellipse at 5% 45%,#285f6c 0%,transparent 52%),linear-gradient(155deg,#102d42,#173f52 55%,#102d42)}
 .about-section::before{bottom:-96px;pointer-events:none}@media(max-width:800px){.about-section::before{bottom:-56px}}
+html:not(.scroll-ready){scrollbar-width:none}html:not(.scroll-ready)::-webkit-scrollbar{display:none}html:not(.scroll-ready) .os-scrollbar{visibility:hidden}
