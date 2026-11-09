@@ -29,7 +29,7 @@ export default function App() {
   }, []);
   useEffect(() => {
     if (!intro) return;
-    const timer = window.setTimeout(() => setIntro(false), 2050);
+    const timer = window.setTimeout(() => setIntro(false), 2500);
     return () => window.clearTimeout(timer);
   }, [intro]);
   useEffect(() => { if (reducedMotion) { const timer = window.setTimeout(() => setIntro(false), 0); return () => window.clearTimeout(timer); } }, [reducedMotion]);
@@ -40,15 +40,6 @@ export default function App() {
     return () => window.removeEventListener('keydown', close);
   }, [menuOpen]);
   useEffect(() => { if (activeProject) dialogRef.current?.showModal(); }, [activeProject]);
-  useEffect(() => {
-    if (intro || reducedMotion || window.matchMedia('(prefers-reduced-motion: reduce)').matches || !Element.prototype.animate) return;
-    const targets = ['.hero-copy h1', '.portrait-stage', '.hero-ground-text', '.hero-copy .eyebrow', '.hero-buttons', '.hero-bottom', '.site-header'].map(selector => document.querySelector(selector)).filter(Boolean);
-    const animations = Array.from(targets, (element, index) => element.animate(
-      [{ opacity: 0.15, transform: 'translateY(24px)' }, { opacity: 1, transform: 'translateY(0)' }],
-      { duration: 620, delay: index * 110, fill: 'backwards', easing: 'cubic-bezier(.22,1,.36,1)' },
-    ));
-    return () => animations.forEach(animation => animation.cancel());
-  }, [intro, reducedMotion]);
   useEffect(() => {
     if (reducedMotion || window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window) || !Element.prototype.animate) return;
     const animations = [];
@@ -85,16 +76,15 @@ export default function App() {
   const closeMenuOnBlur = event => { if (!event.currentTarget.contains(event.relatedTarget)) setMenuOpen(false); };
   return <>
     <div className="ambient-bg" aria-hidden="true"><span /><span /><span /></div>
-    {intro && <div className="intro-screen" aria-hidden="true"><div className="intro-atmosphere"><div className="intro-orbit" /><Marquee /></div></div>}
     <a href="#main" className="skip-link" onClick={() => setIntro(false)}>Skip to content</a>
-    <header className="site-header" onMouseEnter={() => setMenuOpen(true)} onMouseLeave={event => { if (!event.currentTarget.contains(document.activeElement)) setMenuOpen(false); }} onFocus={event => { if (!event.currentTarget.contains(event.relatedTarget) && event.target.matches(':focus-visible')) setMenuOpen(true); }} onBlur={closeMenuOnBlur}>
+    <header className={intro ? "site-header is-intro" : "site-header"} onMouseEnter={() => setMenuOpen(true)} onMouseLeave={event => { if (!event.currentTarget.contains(document.activeElement)) setMenuOpen(false); }} onFocus={event => { if (!event.currentTarget.contains(event.relatedTarget) && event.target.matches(':focus-visible')) setMenuOpen(true); }} onBlur={closeMenuOnBlur}>
       <button ref={menuRef} className="notch-trigger" type="button" aria-label="Navigation menu" aria-expanded={menuOpen} aria-controls="main-nav" onClick={() => setMenuOpen(open => !open)}><Menu size={17} /><span>Menu</span><ChevronDown size={16} /></button>
       <nav id="main-nav" className={menuOpen ? 'nav-links is-open' : 'nav-links'} aria-label="Main navigation" hidden={!menuOpen}>
         <a href="#about" onClick={() => setMenuOpen(false)}>About</a><a href="#experience" onClick={() => setMenuOpen(false)}>Experience</a><a href="#work" onClick={() => setMenuOpen(false)}>Explorations</a><a href="#contact" onClick={() => setMenuOpen(false)}>Contact</a>
       </nav>
     </header>
     <main id="main">
-      <section id="home" className="hero section-wrap">
+      <section id="home" className={intro ? "hero section-wrap is-intro" : "hero section-wrap"}>
         <Marquee />
         <div className="hero-copy"><div className="eyebrow">Informatics student · Surabaya</div><h1>Varellio Louis<br />{' '}<span>Tinangon.</span></h1></div>
         <div className="portrait-stage"><div className="portrait-halo" aria-hidden="true" /><img className="portrait-photo" src="/varellio-portrait.png" alt="Varellio Louis Tinangon" width="1024" height="1536" fetchPriority="high" /></div>
