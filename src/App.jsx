@@ -96,19 +96,24 @@ export default function App() {
     if (!rail || !section || reducedMotion || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const media = gsap.matchMedia();
     media.add('(min-height: 600px)', () => {
+      const previous = section.previousElementSibling;
+      const previousLayer = previous && previous.getBoundingClientRect().height <= window.innerHeight
+        ? ScrollTrigger.create({ trigger: previous, start: 'top top', endTrigger: section, end: 'top top', pin: true, pinSpacing: false, invalidateOnRefresh: true })
+        : null;
       const distance = () => Math.max(0, rail.scrollWidth - rail.clientWidth);
       const lead = 0.12;
+      const setCut = amount => { section.style.clipPath = `inset(0 0 ${amount}% 0)`; };
       const approach = ScrollTrigger.create({
         trigger: section, start: 'top bottom', end: 'top top',
-        onUpdate: self => { rail.scrollLeft = self.progress * lead * distance(); },
+        onUpdate: self => { rail.scrollLeft = self.progress * lead * distance(); setCut((1 - self.progress) * 100); },
       });
       const pinned = ScrollTrigger.create({
         trigger: section, start: 'top top',
         end: () => `+=${Math.max(distance() * (1 - lead), window.innerHeight)}`,
         pin: true, anticipatePin: 1, invalidateOnRefresh: true,
-        onUpdate: self => { rail.scrollLeft = (lead + self.progress * (1 - lead)) * distance(); },
+        onUpdate: self => { rail.scrollLeft = (lead + self.progress * (1 - lead)) * distance(); setCut(Math.max(0, (self.progress - 0.88) / 0.12) * 15); },
       });
-      return () => { approach.kill(); pinned.kill(); };
+      return () => { pinned.kill(); approach.kill(); previousLayer?.kill(); section.style.removeProperty('clip-path'); };
     });
     return () => media.revert();
   }, [reducedMotion]);
