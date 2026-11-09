@@ -37,12 +37,12 @@ const momentPhotos = [
 ];
 const momentColumns = [
   { photos: [0, 1], width: 40, offset: 0 },
-  { photos: [3], width: 43, offset: 2 },
+  { photos: [6], width: 34, offset: 2 },
   { photos: [2, 9], width: 40, offset: 1 },
   { photos: [4], width: 44, offset: 0 },
   { photos: [7, null], width: 29, offset: 3 },
   { photos: [5], width: 42, offset: 1 },
-  { photos: [6], width: 34, offset: 2 },
+  { photos: [3], width: 43, offset: 2 },
   { photos: [8], width: 42, offset: 0 },
   { photos: [10], width: 26, offset: 2 },
   { photos: [null, null], width: 30, offset: 1 },
