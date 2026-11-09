@@ -96,13 +96,19 @@ export default function App() {
     if (!rail || !section || reducedMotion || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const media = gsap.matchMedia();
     media.add('(min-height: 600px)', () => {
-      const trigger = ScrollTrigger.create({
-        trigger: section, start: 'top top',
-        end: () => `+=${Math.max(rail.scrollWidth - rail.clientWidth, window.innerHeight)}`,
-        pin: true, anticipatePin: 1, invalidateOnRefresh: true,
-        onUpdate: self => { rail.scrollLeft = self.progress * (rail.scrollWidth - rail.clientWidth); },
+      const distance = () => Math.max(0, rail.scrollWidth - rail.clientWidth);
+      const lead = 0.12;
+      const approach = ScrollTrigger.create({
+        trigger: section, start: 'top bottom', end: 'top top',
+        onUpdate: self => { rail.scrollLeft = self.progress * lead * distance(); },
       });
-      return () => trigger.kill();
+      const pinned = ScrollTrigger.create({
+        trigger: section, start: 'top top',
+        end: () => `+=${Math.max(distance() * (1 - lead), window.innerHeight)}`,
+        pin: true, anticipatePin: 1, invalidateOnRefresh: true,
+        onUpdate: self => { rail.scrollLeft = (lead + self.progress * (1 - lead)) * distance(); },
+      });
+      return () => { approach.kill(); pinned.kill(); };
     });
     return () => media.revert();
   }, [reducedMotion]);
