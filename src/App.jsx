@@ -78,6 +78,7 @@ export default function App() {
     const observer = new IntersectionObserver(entries => {
       for (const entry of entries) {
         if (!entry.isIntersecting) continue;
+        if (entry.target.classList.contains('timeline-row')) entry.target.classList.add('is-revealed');
         animations.push(entry.target.animate(
           [{ opacity: 0.45, transform: 'translateY(24px)' }, { opacity: 1, transform: 'translateY(0)' }],
           { duration: 850, easing: 'cubic-bezier(.22,1,.36,1)' },
