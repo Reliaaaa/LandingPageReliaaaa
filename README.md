@@ -27,7 +27,7 @@ The production build is written to `dist/`. GitHub Actions runs these checks for
 
 ## Branches and deployment
 
-Create work on a `feature/*` branch. Open a pull request from the feature branch into `dev`, then open a pull request from `dev` into `main` when it is ready for release. Review and merge each pull request manually. CI checks the changes but does not merge or deploy them.
+Create a feature branch and open a pull request directly into `main`. Run the checks, review the changes, and merge when ready. Vercel automatically deploys commits merged into `main`.
 
 To deploy with Vercel, import this GitHub repository into a Vercel project and select `main` as the production branch. Use the Vite framework preset, `npm run build` as the build command, and `dist` as the output directory. Vercel can create preview deployments for pull requests after the Git integration is configured. Add any needed environment variables in the Vercel project settings; keep their values out of Git.
 
