@@ -140,11 +140,11 @@ html.intro-lock,html.intro-lock body{overflow:hidden;overscroll-behavior:none}
 
 .hero h1 .hero-name-first,.hero h1 .hero-name-last{display:block;font-style:normal;color:inherit;white-space:nowrap}.hero h1 .hero-name-first{font-family:'Bodoni Moda',Didot,'Bodoni MT',serif;font-size:clamp(28px,7vw,120px);font-weight:700;letter-spacing:-.045em;line-height:1.05}.hero h1 .hero-name-a{font-family:inherit;font-style:normal;color:inherit}.hero h1 .hero-name-last{font-family:Manrope,'Arial Black',sans-serif;font-size:clamp(34px,8vw,144px);font-weight:800;letter-spacing:-.07em;line-height:1}
 
-@font-face{font-family:'Portfolio Didot';src:url('/fonts/Didot%20Bold.otf') format('opentype');font-style:normal;font-weight:700;font-display:swap}
 @font-face{font-family:'Portfolio SF Pro';src:url('/fonts/SFPRODISPLAYREGULAR.OTF') format('opentype');font-style:normal;font-weight:400;font-display:swap}
 @font-face{font-family:'Portfolio SF Pro';src:url('/fonts/SFPRODISPLAYMEDIUM.OTF') format('opentype');font-style:normal;font-weight:500;font-display:swap}
 @font-face{font-family:'Portfolio SF Pro';src:url('/fonts/SFPRODISPLAYBOLD.OTF') format('opentype');font-style:normal;font-weight:700;font-display:swap}
+@font-face{font-family:'Portfolio SF Pro';src:url('/fonts/SFPRODISPLAYBOLD.OTF') format('opentype');font-style:normal;font-weight:600;font-display:swap}
+@font-face{font-family:'Portfolio SF Pro';src:url('/fonts/SFPRODISPLAYBOLD.OTF') format('opentype');font-style:normal;font-weight:800;font-display:swap}
 @font-face{font-family:'Portfolio SF Pro';src:url('/fonts/SFPRODISPLAYLIGHTITALIC.OTF') format('opentype');font-style:italic;font-weight:400;font-display:swap}
 @font-face{font-family:'Portfolio SF Pro';src:url('/fonts/SFPRODISPLAYSEMIBOLDITALIC.OTF') format('opentype');font-style:italic;font-weight:600;font-display:swap}
 body :not(.hero-name-first):not(.hero-name-a):not(.hero-name-last){font-family:'Portfolio SF Pro',sans-serif}
-.hero h1 .hero-name-first{font-family:'Portfolio Didot',Didot,serif}
