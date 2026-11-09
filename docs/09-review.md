@@ -1,0 +1,21 @@
+# Technical review — 2026-11-08
+
+Decision: suitable for local review; production readiness remains conditional. This review inspected the current source, schema, CI workflow, and available documentation. It does not certify a deployed service.
+
+| Role | Decision and evidence | Remaining work |
+| --- | --- | --- |
+| Product | Feature priorities and acceptance criteria are documented in `01-features.md`; project content is explicitly placeholder content. | Obtain owner-approved biography, experience, and real project material. The explicit experience empty state now meets the placeholder requirement without inventing career history. |
+| Design | Implemented editorial layout, two themes, responsive rules, and clearly labeled project dialogs agree with `03-design.md`. | Desktop/mobile browser evidence is recorded in `06-qa-report.md`. Canva artifact is unavailable; no Canva delivery is claimed. |
+| Frontend | Navigation, theme persistence, reduced-motion branches, dialog controls, and asynchronous form states are implemented. | The previously identified input mismatch is resolved: name requires two characters and message permits at most 4,000, matching the API bounds. Assistive-technology and real-device checks remain unperformed. |
+| Backend / database | Bound SQL parameters, bounded input, generic errors, bearer-protected aggregate reads, and transaction-protected contact quotas are present. | Exercise actual successful persistence, rollback, concurrent quota enforcement, and analytics aggregation against PostgreSQL. Schema application and production database configuration are unverified. |
+| QA | Reviewer independently ran `npm test` (8/8 passing), `npm run lint`, and `npm run build` successfully. | QA reports Chromium checks at 1440 × 900 and 375 × 900 passed for rendering, overflow, persistent dark mode, dialog Escape, mobile navigation, and contact failure guidance. Existing tests and browser checks do not establish successful database writes or deployed behavior; see `06-qa-report.md`. |
+| Security | Scoped backend review is recorded in `07-security.md`; no critical issue was identified by this source review. | A PostgreSQL-backed analytics quota has been added but has not been tested against a real database under concurrency. Configure edge limits, strong secrets, verified database TLS, least privilege, and retention/deletion operations. This is not a canonical security scan or penetration test. |
+| DevOps | GitHub Actions configuration and Vercel setup/rollback instructions are present and appropriately distinguish setup from completed deployment. | No evidence yet of passing hosted CI, branch protection, Vercel integration, deployment URL, or production API checks. |
+| Technical lead | Keep deployment conditional on resolved acceptance gaps and operational verification. | Designer fixes and local browser QA resolve the reported frontend gaps. Successful database operations, production service configuration, deployment checks, and analytics abuse controls still require verification before release. |
+
+The public analytics stream is untrusted telemetry. Its event counts must not determine authorization or billing. Contact success for a filled honeypot is intentionally synthetic and stores no message; ordinary valid submissions succeed only after the database commit.
+
+## Follow-up — 2026-11-09
+
+Neon Free was provisioned and connected; the schema and real PostgreSQL contact/concurrent-quota tests passed. Preview API contact and analytics returned 201 with test records removed. Production remains conditional on retention automation, browser accessibility and responsive verification, and the normal review and release process.
+
