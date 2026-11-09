@@ -132,3 +132,4 @@ html.intro-lock,html.intro-lock body{overflow:hidden;overscroll-behavior:none}
 @media(max-width:800px){.about-photo-placeholder{min-height:220px;max-width:420px}.about-section{gap:36px}}
 .photo-track{padding-inline-end:calc(50vw - clamp(140px,12.5vw,230px))}
 .about-quote-credit{margin:-12px 0 32px;color:var(--muted);font-size:14px;letter-spacing:.04em}
+.about-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 35%;transition:transform .7s cubic-bezier(.22,1,.36,1)}.about-photo-placeholder::before,.about-photo-placeholder::after,.about-photo-orbit{z-index:1;pointer-events:none;opacity:.45}@media(hover:hover) and (prefers-reduced-motion:no-preference){.about-section:hover .about-photo{transform:scale(1.04)}}
