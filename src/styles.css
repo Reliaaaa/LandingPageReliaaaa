@@ -121,3 +121,7 @@ html.intro-lock,html.intro-lock body{overflow:hidden;overscroll-behavior:none}
 
 /* Begin the next section's overlap while the gallery is nearing its end. */
 @media(min-height:600px) and (prefers-reduced-motion:no-preference){.work-section.section-wrap{margin-top:calc(-1 * clamp(240px,50svh,600px))}}
+
+/* Center the first photo and keep an atmospheric layer behind the gallery. */
+.photo-track{padding-inline-start:calc(50vw - clamp(140px,12.5vw,230px))}.photo-section.section-wrap{position:relative;isolation:isolate}.photo-section::before,.photo-section::after{content:'';position:absolute;pointer-events:none;z-index:0}.photo-section::before{inset:-20% 8%;border:1px solid rgba(128,207,216,.14);border-radius:50%;transform:rotate(-18deg) scaleY(.6)}.photo-section::after{width:70vw;height:70vw;max-width:1100px;max-height:1100px;left:15%;top:-25%;border-radius:50%;background:radial-gradient(circle,rgba(57,161,170,.26),rgba(41,94,139,.12) 45%,transparent 70%);filter:blur(36px)}.photo-section>.section-heading,.photo-section>.photo-toolbar,.photo-section>.photo-rail{position:relative;z-index:1}
+@media(prefers-reduced-motion:no-preference){.photo-section::before{animation:gallery-orbit 32s linear infinite}.photo-section::after{animation:gallery-glow 12s ease-in-out infinite alternate}@keyframes gallery-orbit{from{transform:rotate(-18deg) scaleY(.6)}to{transform:rotate(342deg) scaleY(.6)}}@keyframes gallery-glow{from{opacity:.55;transform:translateX(-6%)}to{opacity:1;transform:translateX(6%)}}}
