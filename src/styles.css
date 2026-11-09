@@ -156,3 +156,4 @@ body :not(.hero-name-first):not(.hero-name-a):not(.hero-name-last){font-family:'
 
 /* The About page slides over the complete hero without covering its controls. */
 .hero h1{top:-50px}.about-section.section-wrap{position:relative;z-index:2;isolation:isolate;border-top:0}.about-section::before{content:'';position:absolute;z-index:-1;top:0;bottom:0;left:50%;width:100vw;transform:translateX(-50%);border-radius:24px 24px 0 0;border-top:1px solid rgba(202,226,235,.22);background:radial-gradient(ellipse at 5% 45%,#285f6c 0%,transparent 52%),linear-gradient(155deg,#102d42,#173f52 55%,#102d42)}
+.about-section::before{bottom:-96px;pointer-events:none}@media(max-width:800px){.about-section::before{bottom:-56px}}
