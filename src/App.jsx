@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useReducedMotion } from 'framer-motion';
-import { ArrowDown, ArrowUpRight, ChevronDown, Menu, Moon, Sun, X } from 'lucide-react';
+import { ArrowDown, ArrowUpRight, ChevronDown, Menu, X } from 'lucide-react';
 
 const linkedin = 'https://www.linkedin.com/in/varellio-louis-tinangon-4172702a0/';
 const concepts = [
@@ -12,7 +12,6 @@ const concepts = [
 export default function App() {
   const reducedMotion = useReducedMotion();
   const [intro, setIntro] = useState(() => !window.matchMedia('(prefers-reduced-motion: reduce)').matches);
-  const [dark, setDark] = useState(() => { try { return localStorage.getItem('portfolio-theme') !== 'light'; } catch { return true; } });
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeProject, setActiveProject] = useState(null);
   const [status, setStatus] = useState({ kind: 'idle', message: '' });
@@ -23,7 +22,6 @@ export default function App() {
   useEffect(() => {
     fetch('/api/analytics', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ event: 'page_view', path: window.location.pathname }) }).catch(() => {});
   }, []);
-  useEffect(() => { document.documentElement.dataset.theme = dark ? 'dark' : 'light'; try { localStorage.setItem('portfolio-theme', dark ? 'dark' : 'light'); } catch { /* Theme storage is optional. */ } }, [dark]);
   useEffect(() => {
     if (!intro) return;
     const timer = window.setTimeout(() => setIntro(false), 1800);
@@ -90,11 +88,11 @@ export default function App() {
       <button ref={menuRef} className="notch-trigger" type="button" aria-label="Navigation menu" aria-expanded={menuOpen} aria-controls="main-nav" onClick={() => setMenuOpen(open => !open)}><Menu size={17} /><span>Menu</span><ChevronDown size={16} /></button>
       <nav id="main-nav" className={menuOpen ? 'nav-links is-open' : 'nav-links'} aria-label="Main navigation" hidden={!menuOpen}>
         <a href="#about" onClick={() => setMenuOpen(false)}>About</a><a href="#experience" onClick={() => setMenuOpen(false)}>Experience</a><a href="#work" onClick={() => setMenuOpen(false)}>Explorations</a><a href="#contact" onClick={() => setMenuOpen(false)}>Contact</a>
-        <button className="theme-button" onClick={() => setDark(!dark)} aria-label={`Switch to ${dark ? 'light' : 'dark'} mode`}>{dark ? <Sun size={18} /> : <Moon size={18} />}</button>
       </nav>
     </header>
     <main id="main">
       <section id="home" className="hero section-wrap">
+        <div className="hero-marquee" aria-hidden="true">{['Technology', 'Creative Media', 'Digital Transformation', 'Entrepreneurship'].map((word, i) => <div className={`marquee-row marquee-row-${i + 1}`} key={word}><div className="marquee-track"><span>{word} · {word} · </span><span>{word} · {word} · </span></div></div>)}</div>
         <div className="hero-copy"><div className="eyebrow">Informatics student · Surabaya</div><h1>Varellio Louis<br /><span>Tinangon.</span></h1></div>
         <div className="portrait-stage"><div className="portrait-halo" aria-hidden="true" /><img className="portrait-photo" src="/varellio-portrait.png" alt="Varellio Louis Tinangon" width="1024" height="1536" fetchPriority="high" /></div>
         <div className="hero-ground"><div className="hero-ground-text" aria-hidden="true">Technology · Creativity · Community</div><div className="hero-buttons"><a href="#about" className="button button-dark">Explore my interests <ArrowDown size={17} /></a><a className="text-link" href={linkedin} target="_blank" rel="noreferrer">Connect on LinkedIn <ArrowUpRight size={17} /></a></div>
