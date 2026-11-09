@@ -66,6 +66,15 @@ export default function App() {
   }, [intro]);
   useEffect(() => { if (reducedMotion) { const timer = window.setTimeout(() => setIntro(false), 0); return () => window.clearTimeout(timer); } }, [reducedMotion]);
   useEffect(() => {
+    if (intro || reducedMotion || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const media = gsap.matchMedia();
+    media.add('(min-height: 600px)', () => {
+      const overlap = ScrollTrigger.create({ trigger: '#home', start: 'bottom bottom', endTrigger: '#about', end: 'top top', pin: true, pinSpacing: false, invalidateOnRefresh: true });
+      return () => overlap.kill();
+    });
+    return () => media.revert();
+  }, [intro, reducedMotion]);
+  useEffect(() => {
     if (!menuOpen) return;
     const close = event => { if (event.key === 'Escape') { setMenuOpen(false); menuRef.current?.focus(); } };
     window.addEventListener('keydown', close);
