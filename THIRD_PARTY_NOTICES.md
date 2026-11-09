@@ -1,5 +1,7 @@
 # Third-party notices
 
+Social media icons are from Simple Icons (CC0 1.0): https://github.com/simple-icons/simple-icons
+
 Portions of the interest icon overlap implementation are adapted from react-overlap:
 https://github.com/kristoferlund/react-overlap
 

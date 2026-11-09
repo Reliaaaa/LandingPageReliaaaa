@@ -9,6 +9,12 @@ gsap.registerPlugin(ScrollTrigger);
 import { ArrowDown, ArrowUpRight, ChevronDown, Menu, X } from 'lucide-react';
 
 const linkedin = 'https://www.linkedin.com/in/varellio-louis-tinangon-4172702a0/';
+const socials = [
+  { name: 'Instagram', handle: '@varellio671', href: 'https://www.instagram.com/varellio671/', icon: 'instagram' },
+  { name: 'TikTok', handle: '@varellio671', href: 'https://www.tiktok.com/@varellio671', icon: 'tiktok' },
+  { name: 'GitHub', handle: '@Reliaaaa', href: 'https://github.com/Reliaaaa', icon: 'github' },
+  { name: 'LinkedIn', handle: 'Varellio Louis Tinangon', href: linkedin, icon: 'linkedin' },
+];
 const concepts = [
   { number: '01', title: 'A space for what’s next.', description: 'A future home for a project overview, your role, and what you learned.', style: 'orbit' },
   { number: '02', title: 'Ideas, made tangible.', description: 'A place for a real project, its process, and an honest account of the outcome.', style: 'type' },
@@ -25,8 +31,6 @@ export default function App() {
   const [intro, setIntro] = useState(() => !window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeProject, setActiveProject] = useState(null);
-  const [status, setStatus] = useState({ kind: 'idle', message: '' });
-  const [form, setForm] = useState({ name: '', email: '', message: '', company: '' });
   const menuRef = useRef(null);
   const dialogRef = useRef(null);
   const photoSectionRef = useRef(null);
@@ -107,7 +111,7 @@ export default function App() {
         observer.unobserve(entry.target);
       }
     }, { threshold: 0.12 });
-    document.querySelectorAll('.about-content, .timeline-row, .section-heading, .photo-rail, .project-card, .contact-copy, .contact-form-wrap').forEach(element => observer.observe(element));
+    document.querySelectorAll('.about-content, .timeline-row, .section-heading, .photo-rail, .project-card, .contact-copy, .contact-socials').forEach(element => observer.observe(element));
     return () => { observer.disconnect(); animations.forEach(animation => animation.cancel()); experience?.classList.remove('experience-motion'); experience?.querySelectorAll('.timeline-row.is-revealed').forEach(row => row.classList.remove('is-revealed')); };
   }, [reducedMotion]);
 
@@ -139,20 +143,6 @@ export default function App() {
     });
     return () => media.revert();
   }, [reducedMotion]);
-
-  async function handleSubmit(event) {
-    event.preventDefault();
-    if (status.kind === 'sending') return;
-    setStatus({ kind: 'sending', message: 'Sending your message…' });
-    try {
-      const response = await fetch('/api/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form) });
-      const data = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(data.error || 'Your message couldn’t be sent. Please try again or connect on LinkedIn.');
-      fetch('/api/analytics', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ event: 'contact_submit', path: window.location.pathname }) }).catch(() => {});
-      setStatus({ kind: 'success', message: 'Message received. Thank you for getting in touch!' });
-      setForm({ name: '', email: '', message: '', company: '' });
-    } catch (error) { setStatus({ kind: 'error', message: error.message || 'Something went wrong. Please try again.' }); }
-  }
 
   const closeProject = () => { dialogRef.current?.close(); setActiveProject(null); };
   const closeMenuOnBlur = event => { if (!event.currentTarget.contains(event.relatedTarget)) setMenuOpen(false); };
@@ -188,7 +178,7 @@ export default function App() {
       </div><a className="underlined-link" href={linkedin} target="_blank" rel="noreferrer">View experience on LinkedIn <ArrowUpRight size={16} /></a></div></div></section>
       <section id="moments" ref={photoSectionRef} className="photo-section section-wrap"><div className="section-heading"><div><div className="section-index">03 / Moments</div><h2>Moments <span>in motion.</span></h2></div><p>A space for photographs to come.</p></div><div className="photo-toolbar"><p>Photo placeholders — personal photographs will be added later. Scroll down to explore the gallery, or swipe through it.</p></div><div ref={photoRailRef} className="photo-rail" role="region" aria-label="Photo placeholders; scroll horizontally" tabIndex={0}><div className="photo-track">{Array.from({length: 8}, (_, column) => <div className="photo-column" key={column}>{[0, 1].map(row => <div className="photo-placeholder" key={row}><span>{String(column * 2 + row + 1).padStart(2, '0')}</span><p>PHOTO PLACEHOLDER</p><small>Coming soon</small></div>)}</div>)}</div></div></section>
       <section id="work" className="work-section section-wrap"><div className="section-heading"><div><div className="section-index">04 / Explorations</div><h2>Selected <span>possibilities.</span></h2></div><p>A space for ideas and what comes next.</p></div><div className="project-grid">{concepts.map(project => <button key={project.number} className="project-card" onClick={() => setActiveProject(project)} aria-label={`View concept placeholder ${project.number}: ${project.title}`}><div className={`project-art ${project.style}`}><span>EXPLORATION {project.number}</span><span className="concept-symbol" aria-hidden="true">{project.style === 'orbit' ? '◉' : project.style === 'type' ? '↗' : '✳'}</span><span className="placeholder-label">CONCEPT / PLACEHOLDER</span></div><div className="project-info"><span>Concept / Placeholder</span><h3>{project.title}</h3><p>Explore the idea <ArrowUpRight size={15} /></p></div></button>)}</div></section>
-      <section id="contact" className="contact-section section-wrap"><div className="contact-copy"><div className="section-index">05 / Say hello</div><h2>Good things start<br />with a <span>conversation.</span></h2><p>A question, an idea, or just a hello. There’s always room for a new connection.</p><a href={linkedin} className="linkedin-link" target="_blank" rel="noreferrer">Find me on LinkedIn <ArrowUpRight size={16} /></a></div><div className="contact-form-wrap"><form onSubmit={handleSubmit}><div className="form-row"><label>Your name<input name="name" autoComplete="name" placeholder="Your name" value={form.name} required minLength={2} maxLength={100} onChange={e => setForm({ ...form, name: e.target.value })} /></label><label>Email address<input name="email" type="email" autoComplete="email" placeholder="you@example.com" value={form.email} required maxLength={254} onChange={e => setForm({ ...form, email: e.target.value })} /></label></div><label>Message<textarea name="message" placeholder="Tell me a little about it…" rows={5} required minLength={10} maxLength={4000} value={form.message} onChange={e => setForm({ ...form, message: e.target.value })} /></label><div className="honeypot" aria-hidden="true"><label>Company<input name="company" tabIndex={-1} autoComplete="off" value={form.company} onChange={e => setForm({ ...form, company: e.target.value })} /></label></div><div className="form-footer"><span>Let’s see where it goes.</span><button className="button button-dark" type="submit" disabled={status.kind === 'sending'}>{status.kind === 'sending' ? 'Sending…' : 'Send a message'} <ArrowUpRight size={17} /></button></div><p className={`form-status ${status.kind}`} role="status" aria-live="polite">{status.message}</p></form></div></section>
+      <section id="contact" className="contact-section section-wrap"><div className="contact-copy"><div className="section-index">05 / Contact</div><h2>Let’s stay<br /><span>connected.</span></h2><p>Find me online and let’s start a conversation.</p></div><div className="contact-socials" role="group" aria-label="Social media profiles">{socials.map(social => <a className="contact-social" key={social.name} href={social.href} target="_blank" rel="noreferrer"><span className="contact-social-icon"><img src={`/social/${social.icon}.svg`} alt="" width="24" height="24" /></span><span className="contact-social-label"><strong>{social.name}</strong><small>{social.handle}</small></span><ArrowUpRight className="contact-social-arrow" size={20} aria-hidden="true" /></a>)}</div></section>
     </main>
     <footer className="site-footer section-wrap"><span>© {new Date().getFullYear()} Varellio Louis Tinangon</span><a href={linkedin} target="_blank" rel="noreferrer">LinkedIn <ArrowUpRight size={14} /></a><a href="#home">Back to top ↑</a></footer>
     <dialog data-lenis-prevent ref={dialogRef} onCancel={closeProject} onClick={e => { if (e.target === e.currentTarget) closeProject(); }} className="project-dialog" aria-labelledby="project-title">{activeProject && <><button className="dialog-close" onClick={closeProject} aria-label="Close project"><X /></button><div className="eyebrow">CONCEPT {activeProject.number} / PLACEHOLDER</div><h2 id="project-title">{activeProject.title}</h2><p>{activeProject.description}</p><p>This is sample portfolio content; no completed project, client relationship, or result is claimed.</p><button className="button button-dark" onClick={closeProject}>Back to exploring</button></>}</dialog>
