@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useReducedMotion } from 'framer-motion';
 import Lenis from 'lenis';
+import { OverlayScrollbars } from 'overlayscrollbars';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 gsap.registerPlugin(ScrollTrigger);
@@ -35,6 +36,14 @@ export default function App() {
     window.history.scrollRestoration = 'manual';
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
     return () => { window.history.scrollRestoration = previous; };
+  }, []);
+  useEffect(() => {
+    const instance = OverlayScrollbars({ target: document.body, cancel: { body: null } }, {
+      overflow: { x: 'hidden', y: 'scroll' },
+      scrollbars: { theme: 'os-theme-portfolio', autoHide: 'never', dragScroll: true },
+    });
+    const frame = window.requestAnimationFrame(() => ScrollTrigger.refresh());
+    return () => { window.cancelAnimationFrame(frame); instance?.destroy(); };
   }, []);
   useEffect(() => {
     if (intro || reducedMotion || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
