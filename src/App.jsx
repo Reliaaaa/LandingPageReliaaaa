@@ -1,6 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useReducedMotion } from 'framer-motion';
 import Lenis from 'lenis';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+gsap.registerPlugin(ScrollTrigger);
 import { ArrowDown, ArrowUpRight, ChevronDown, Menu, X } from 'lucide-react';
 
 const linkedin = 'https://www.linkedin.com/in/varellio-louis-tinangon-4172702a0/';
@@ -19,13 +22,20 @@ export default function App() {
   const reducedMotion = useReducedMotion();
   const [intro, setIntro] = useState(() => !window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [galleryPaused, setGalleryPaused] = useState(false);
   const [activeProject, setActiveProject] = useState(null);
   const [status, setStatus] = useState({ kind: 'idle', message: '' });
   const [form, setForm] = useState({ name: '', email: '', message: '', company: '' });
   const menuRef = useRef(null);
   const dialogRef = useRef(null);
+  const photoSectionRef = useRef(null);
+  const photoRailRef = useRef(null);
 
+  useLayoutEffect(() => {
+    const previous = window.history.scrollRestoration;
+    window.history.scrollRestoration = 'manual';
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    return () => { window.history.scrollRestoration = previous; };
+  }, []);
   useEffect(() => {
     if (intro || reducedMotion || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const lenis = new Lenis({ autoRaf: true, anchors: { offset: -95 }, syncTouch: false });
@@ -70,6 +80,17 @@ export default function App() {
   }, [reducedMotion]);
 
 
+  useEffect(() => {
+    const rail = photoRailRef.current;
+    const section = photoSectionRef.current;
+    if (!rail || !section || reducedMotion || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const trigger = ScrollTrigger.create({
+      trigger: section, start: 'top bottom', end: 'bottom top',
+      onUpdate: self => { rail.scrollLeft = self.progress * (rail.scrollWidth - rail.clientWidth); },
+    });
+    return () => trigger.kill();
+  }, [reducedMotion]);
+
   async function handleSubmit(event) {
     event.preventDefault();
     if (status.kind === 'sending') return;
@@ -105,7 +126,7 @@ export default function App() {
       </section>
       <section id="about" className="about-section section-wrap"><div className="section-index">01 / About</div><div className="about-content"><h2>More than a name.<br /><span>A story taking shape.</span></h2><div className="about-columns"><p>I am an Informatics student at Petra Christian University, interested in network and cyber security, digital transformation, entrepreneurship, and creative media.</p><div><p>I’m curious about the connections between technology, creativity, and community.</p><a className="underlined-link" href={linkedin} target="_blank" rel="noreferrer">Get to know me <ArrowUpRight size={16} /></a></div></div></div></section>
       <section id="experience" className="experience-section section-wrap"><div className="experience-inner"><div className="section-index">02 / Experience</div><div><h2>A journey <span>in the making.</span></h2><div className="timeline"><article className="timeline-row"><p>Mar 2025 – Feb 2026</p><div><h3>Student Council Treasurer</h3><p>Frateran Catholic Senior High School</p><p>Worked on budgets and financial reports.</p></div></article><article className="timeline-row"><p>Feb 2024 – Feb 2025</p><div><h3>Social &amp; Community Relations</h3><p>Frateran Catholic Senior High School</p><p>Supported community events and the Suara Fratorian podcast.</p></div></article></div><a className="underlined-link" href={linkedin} target="_blank" rel="noreferrer">View experience on LinkedIn <ArrowUpRight size={16} /></a></div></div></section>
-      <section id="moments" className="photo-section section-wrap"><div className="section-heading"><div><div className="section-index">03 / Moments</div><h2>Moments <span>in motion.</span></h2></div><p>A space for photographs to come.</p></div><div className="photo-toolbar"><p>Photo placeholders — personal photographs will be added later.</p>{!reducedMotion && <button type="button" className="photo-pause" aria-pressed={galleryPaused} onClick={() => setGalleryPaused(paused => !paused)}>{galleryPaused ? 'Resume photo motion' : 'Pause photo motion'}</button>}</div><div className="photo-rail" data-paused={galleryPaused} role="region" aria-label="Photo placeholders" tabIndex={0}><div className="photo-track">{[0, 1].map(copy => <div className="photo-group" key={copy} aria-hidden={copy === 1 ? true : undefined}>{[1, 2, 3, 4].map(number => <div className="photo-placeholder" key={number}><span>{String(number).padStart(2, '0')}</span><p>PHOTO PLACEHOLDER</p><small>Coming soon</small></div>)}</div>)}</div></div></section>
+      <section id="moments" ref={photoSectionRef} className="photo-section section-wrap"><div className="section-heading"><div><div className="section-index">03 / Moments</div><h2>Moments <span>in motion.</span></h2></div><p>A space for photographs to come.</p></div><div className="photo-toolbar"><p>Photo placeholders — personal photographs will be added later. Scroll the page or swipe through the gallery.</p></div><div ref={photoRailRef} className="photo-rail" role="region" aria-label="Photo placeholders; scroll horizontally" tabIndex={0}><div className="photo-track">{Array.from({length: 8}, (_, column) => <div className="photo-column" key={column}>{[0, 1].map(row => <div className="photo-placeholder" key={row}><span>{String(column * 2 + row + 1).padStart(2, '0')}</span><p>PHOTO PLACEHOLDER</p><small>Coming soon</small></div>)}</div>)}</div></div></section>
       <section id="work" className="work-section section-wrap"><div className="section-heading"><div><div className="section-index">04 / Explorations</div><h2>Selected <span>possibilities.</span></h2></div><p>A space for ideas and what comes next.</p></div><div className="project-grid">{concepts.map(project => <button key={project.number} className="project-card" onClick={() => setActiveProject(project)} aria-label={`View concept placeholder ${project.number}: ${project.title}`}><div className={`project-art ${project.style}`}><span>EXPLORATION {project.number}</span><span className="concept-symbol" aria-hidden="true">{project.style === 'orbit' ? '◉' : project.style === 'type' ? '↗' : '✳'}</span><span className="placeholder-label">CONCEPT / PLACEHOLDER</span></div><div className="project-info"><span>Concept / Placeholder</span><h3>{project.title}</h3><p>Explore the idea <ArrowUpRight size={15} /></p></div></button>)}</div></section>
       <section id="contact" className="contact-section section-wrap"><div className="contact-copy"><div className="section-index">05 / Say hello</div><h2>Good things start<br />with a <span>conversation.</span></h2><p>A question, an idea, or just a hello. There’s always room for a new connection.</p><a href={linkedin} className="linkedin-link" target="_blank" rel="noreferrer">Find me on LinkedIn <ArrowUpRight size={16} /></a></div><div className="contact-form-wrap"><form onSubmit={handleSubmit}><div className="form-row"><label>Your name<input name="name" autoComplete="name" placeholder="Your name" value={form.name} required minLength={2} maxLength={100} onChange={e => setForm({ ...form, name: e.target.value })} /></label><label>Email address<input name="email" type="email" autoComplete="email" placeholder="you@example.com" value={form.email} required maxLength={254} onChange={e => setForm({ ...form, email: e.target.value })} /></label></div><label>Message<textarea name="message" placeholder="Tell me a little about it…" rows={5} required minLength={10} maxLength={4000} value={form.message} onChange={e => setForm({ ...form, message: e.target.value })} /></label><div className="honeypot" aria-hidden="true"><label>Company<input name="company" tabIndex={-1} autoComplete="off" value={form.company} onChange={e => setForm({ ...form, company: e.target.value })} /></label></div><div className="form-footer"><span>Let’s see where it goes.</span><button className="button button-dark" type="submit" disabled={status.kind === 'sending'}>{status.kind === 'sending' ? 'Sending…' : 'Send a message'} <ArrowUpRight size={17} /></button></div><p className={`form-status ${status.kind}`} role="status" aria-live="polite">{status.message}</p></form></div></section>
     </main>
