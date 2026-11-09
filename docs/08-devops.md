@@ -5,7 +5,6 @@
 1. Create a feature branch for each change.
 2. Open a pull request directly into `main`, review it, and merge after CI passes.
 3. Verify the resulting Vercel production deployment.
-3. When `dev` is ready to release, open a pull request from `dev` into `main`. Review it and merge it manually after CI passes.
 
 The repository's GitHub Actions workflow runs lint, tests, and a production build on pull requests into `dev` and `main`, and on pushes to those branches. Branch protection and required checks can be enabled in GitHub repository settings. The workflow does not publish a deployment.
 
