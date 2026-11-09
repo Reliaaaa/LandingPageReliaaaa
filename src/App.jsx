@@ -149,7 +149,7 @@ export default function App() {
     <main id="main" tabIndex={-1}>
       <section id="home" className={intro ? "hero section-wrap is-intro" : "hero section-wrap"}>
         <Marquee />
-        <div className="hero-copy"><div className="eyebrow">Informatics student · Surabaya</div><h1>Varellio Louis<br />{' '}<span>Tinangon.</span></h1></div>
+        <div className="hero-copy"><div className="eyebrow">Informatics student · Surabaya</div><h1 aria-label="Varellio Louis Tinangon"><span className="hero-name-first" aria-hidden="true">V<span className="hero-name-a">Λ</span>RELLIO LOUIS</span><span className="hero-name-last" aria-hidden="true">TINANGON</span></h1></div>
         <div className="portrait-stage"><div className="portrait-halo" aria-hidden="true" /><img className="portrait-photo" src="/varellio-portrait.png" alt="Varellio Louis Tinangon" width="1024" height="1536" fetchPriority="high" /></div>
         <div className="hero-ground"><div className="hero-ground-text" aria-hidden="true">Technology · Creativity · Entrepreneur</div><div className="hero-buttons"><a href="#about" className="button button-dark">Explore my interests <ArrowDown size={17} /></a><a className="text-link" href={linkedin} target="_blank" rel="noreferrer">Connect on LinkedIn <ArrowUpRight size={17} /></a></div>
         <div className="hero-bottom"><a href="#about">Scroll to discover <ArrowDown size={16} /></a></div></div>
