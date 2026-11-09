@@ -63,3 +63,12 @@
 /* The opening typography pulls back before the hero elements appear. */
 .intro-screen{animation:intro-pullback 2050ms cubic-bezier(.22,1,.36,1) forwards}@keyframes intro-pullback{0%{opacity:1;transform:scale(2.4)}70%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1)}}
 @media(prefers-reduced-motion:reduce){.intro-screen{display:none;animation:none}}
+
+/* One continuous background: the same marquee settles while hero content enters. */
+@media(prefers-reduced-motion:no-preference){
+.hero.is-intro .hero-marquee{animation:marquee-settle 1800ms cubic-bezier(.22,1,.36,1) both}
+.hero.is-intro .hero-copy h1,.hero.is-intro .portrait-stage,.hero.is-intro .hero-ground-text,.hero.is-intro .hero-copy .eyebrow,.hero.is-intro .hero-buttons,.hero.is-intro .hero-bottom,.site-header.is-intro{animation:hero-arrive 750ms cubic-bezier(.22,1,.36,1) both}
+.hero.is-intro .hero-copy h1{animation-delay:650ms}.hero.is-intro .portrait-stage{animation-delay:800ms}.hero.is-intro .hero-ground-text{animation-delay:950ms}.hero.is-intro .hero-copy .eyebrow{animation-delay:1050ms}.hero.is-intro .hero-buttons{animation-delay:1150ms}.hero.is-intro .hero-bottom{animation-delay:1250ms}.site-header.is-intro{animation-delay:1350ms}
+@keyframes marquee-settle{from{transform:scale(2.4)}to{transform:scale(1)}}@keyframes hero-arrive{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.hero.is-intro:focus-within .hero-buttons,.hero.is-intro:focus-within .hero-bottom,.site-header.is-intro:focus-within{animation:none;opacity:1;transform:none}
+}
