@@ -131,3 +131,4 @@ html.intro-lock,html.intro-lock body{overflow:hidden;overscroll-behavior:none}
 @media(hover:hover) and (prefers-reduced-motion:no-preference){.about-section:hover .about-photo-placeholder{border-color:rgba(139,209,226,.6);box-shadow:0 18px 55px rgba(2,20,30,.25)}.about-section:hover .about-photo-placeholder::before{transform:rotate(8deg) scaleY(.8)}.about-section:hover .about-photo-placeholder::after{transform:rotate(-8deg) scaleY(.8)}.about-section:hover .about-photo-orbit{transform:rotate(35deg) scaleY(.8)}.about-section:hover .about-content h2 span{color:#d9edf5}}
 @media(max-width:800px){.about-photo-placeholder{min-height:220px;max-width:420px}.about-section{gap:36px}}
 .photo-track{padding-inline-end:calc(50vw - clamp(140px,12.5vw,230px))}
+.about-quote-credit{margin:-12px 0 32px;color:var(--muted);font-size:14px;letter-spacing:.04em}
