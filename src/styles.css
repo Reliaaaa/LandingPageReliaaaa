@@ -151,4 +151,5 @@ body :not(.hero-name-first):not(.hero-name-a):not(.hero-name-last){font-family:'
 .hero h1 .hero-name-first,.hero h1 .hero-name-a{font-family:'Portfolio SF Pro',sans-serif;font-style:italic;font-weight:600}
 
 .hero h1{top:-30px}
-@supports (-webkit-text-stroke:1px #fff){@media(prefers-reduced-motion:no-preference){.hero.is-intro h1{text-shadow:none}.hero.is-intro .hero-name-first,.hero.is-intro .hero-name-last{-webkit-text-stroke:1px #f1f5f7;animation:hero-name-fill 1.65s ease-in-out .7s both}@keyframes hero-name-fill{0%,25%{-webkit-text-fill-color:transparent}100%{-webkit-text-fill-color:#f1f5f7}}}}
+.hero h1 .hero-name-first .hero-name-letter,.hero h1 .hero-name-last .hero-name-letter{font-family:inherit;font-style:inherit;font-weight:inherit;color:inherit}
+@supports (-webkit-text-stroke:1px #fff){@media(prefers-reduced-motion:no-preference){.hero.is-intro h1{text-shadow:none}.hero.is-intro .hero-name-letter{-webkit-text-stroke:1px #f1f5f7;animation:hero-name-fill .75s ease-in-out both;animation-delay:calc(.5s + var(--letter-index) * 55ms)}@keyframes hero-name-fill{0%,20%{-webkit-text-fill-color:transparent}100%{-webkit-text-fill-color:#f1f5f7}}}}
