@@ -216,3 +216,6 @@ html.menu-lock,html.menu-lock body{overflow:hidden!important;overscroll-behavior
 
 /* Once the exit reveal is complete, keep every navigation link hidden while the curtain moves. */
 .site-header .nav-links.is-closing:not(.is-open) .nav-content nav{visibility:hidden}
+
+/* A separate exit animation holds the photo mask closed throughout the curtain transition. */
+@media(prefers-reduced-motion:no-preference){.site-header .nav-links.is-closing .nav-art-item{animation:nav-photo-oval-exit .65s cubic-bezier(.65,0,.35,1) both;animation-delay:calc((3 - var(--art-index)) * 50ms)}@keyframes nav-photo-oval-exit{from{clip-path:ellipse(75% 75% at 50% 50%)}to{clip-path:ellipse(0% 0% at 50% 50%)}}}
