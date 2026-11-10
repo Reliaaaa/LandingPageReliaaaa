@@ -165,4 +165,5 @@ html:not(.scroll-ready){scrollbar-width:none}html:not(.scroll-ready)::-webkit-sc
 .photo-column{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:var(--photo-offset,0px)!important}.photo-section .photo-column:nth-child(n) .photo-placeholder.photo-filled{width:100%;max-height:100%;flex:none}.photo-section .photo-column:nth-child(n) .photo-placeholder:not(.photo-filled){width:100%;height:var(--placeholder-height);min-height:120px;flex:none}
 
 .site-header .nav-links{display:flex;opacity:0;visibility:hidden;pointer-events:none;transform:translateY(-8px) scale(.97);transform-origin:top right;transition:opacity .24s ease,transform .32s cubic-bezier(.22,1,.36,1),visibility 0s linear .32s}.site-header .nav-links.is-open{opacity:1;visibility:visible;pointer-events:auto;transform:translateY(0) scale(1);transition-delay:0s}.notch-trigger svg:last-child{transition:transform .3s cubic-bezier(.22,1,.36,1)}.notch-trigger[aria-expanded='true'] svg:last-child{transform:rotate(180deg)}
+.portrait-photo{aspect-ratio:1086 / 1448}.portrait-photo img{display:block;width:100%;height:100%;object-fit:contain;object-position:center bottom}
 
