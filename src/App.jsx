@@ -179,21 +179,22 @@ export default function App() {
     const media = gsap.matchMedia();
     media.add('(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)', () => {
       const images = Array.from(menu.querySelectorAll('.nav-art-item img'));
+      const frames = Array.from(menu.querySelectorAll('.nav-art-shift'));
       gsap.set(images, { scale: 1.06 });
-      const movement = images.map((image, index) => ({
-        x: gsap.quickTo(image, 'x', { duration: .8, ease: 'power3.out' }),
-        y: gsap.quickTo(image, 'y', { duration: .8, ease: 'power3.out' }),
-        strength: [1, -.65, .8, -.9][index],
+      const movement = frames.map((frame, index) => ({
+        x: gsap.quickTo(frame, 'x', { duration: 1, ease: 'power3.out' }),
+        y: gsap.quickTo(frame, 'y', { duration: 1.2, ease: 'power3.out' }),
+        strength: [1, -1, -1, 1][index],
       }));
       const move = event => {
         if (event.pointerType !== 'mouse') return;
         const x = (event.clientX / window.innerWidth - .5) * 20;
-        const y = (event.clientY / window.innerHeight - .5) * 16;
+        const y = (event.clientY / window.innerHeight - .5) * Math.min(window.innerHeight * .3, 240);
         movement.forEach(item => { item.x(x * item.strength); item.y(y * item.strength); });
       };
       const reset = () => movement.forEach(item => { item.x(0); item.y(0); });
       menu.addEventListener('pointermove', move); menu.addEventListener('pointerleave', reset); window.addEventListener('blur', reset);
-      return () => { menu.removeEventListener('pointermove', move); menu.removeEventListener('pointerleave', reset); window.removeEventListener('blur', reset); gsap.killTweensOf(images); gsap.set(images, { clearProps: 'transform' }); };
+      return () => { menu.removeEventListener('pointermove', move); menu.removeEventListener('pointerleave', reset); window.removeEventListener('blur', reset); gsap.killTweensOf([...images, ...frames]); gsap.set([...images, ...frames], { clearProps: 'transform' }); };
     });
     return () => media.revert();
   }, [menuOpen, reducedMotion]);
@@ -256,8 +257,8 @@ export default function App() {
     <header className={intro ? "site-header is-intro" : "site-header"}>
       <button ref={menuRef} className="notch-trigger" type="button" aria-label="Open navigation menu" aria-expanded={menuOpen} aria-controls="main-nav" aria-hidden={menuOpen} inert={menuOpen} disabled={intro} onClick={() => setMenuOpen(true)}><svg width="17" height="17" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M219.31,108.68l-80-80a16,16,0,0,0-22.62,0l-80,80A15.87,15.87,0,0,0,32,120v96a8,8,0,0,0,8,8h64a8,8,0,0,0,8-8V160h32v56a8,8,0,0,0,8,8h64a8,8,0,0,0,8-8V120A15.87,15.87,0,0,0,219.31,108.68ZM208,208H160V152a8,8,0,0,0-8-8H104a8,8,0,0,0-8,8v56H48V120l80-80,80,80Z" /></svg><AnimatedLabel text="Menu" /></button>
       <div ref={navRef} id="main-nav" className={menuOpen ? 'nav-links is-open' : 'nav-links'} role="dialog" aria-modal="true" aria-label="Navigation menu" aria-hidden={!menuOpen} inert={!menuOpen} data-lenis-prevent>
-        <button className="nav-close" type="button" aria-label="Close navigation menu" onClick={() => { setMenuOpen(false); window.requestAnimationFrame(() => menuRef.current?.focus({ preventScroll: true })); }}><X size={20} aria-hidden="true" /><AnimatedLabel text="Close" /></button>
-        <div className="nav-art" aria-hidden="true">{['/images/optimized/menu-v1-portrait.webp', '/images/optimized/menu-v1-horizontal.webp', '/images/optimized/menu-v1-frateran.webp', '/images/optimized/menu-v1-speaking.webp'].map((src, index) => <div className="nav-art-item" key={src} style={{ '--art-index': index }}><img src={src} alt="" fetchPriority="low" decoding="async" /></div>)}</div>
+        <button className="nav-close" type="button" aria-label="Close navigation menu" onClick={() => { setMenuOpen(false); window.requestAnimationFrame(() => menuRef.current?.focus({ preventScroll: true })); }}><span className="nav-close-icon" aria-hidden="true"><X size={17} /><X size={17} /></span><AnimatedLabel text="Close" /></button>
+        <div className="nav-art" aria-hidden="true">{['/images/optimized/menu-v1-portrait.webp', '/images/optimized/menu-v1-horizontal.webp', '/images/optimized/menu-v1-frateran.webp', '/images/optimized/menu-v1-speaking.webp'].map((src, index) => <div className="nav-art-shift" key={src}><div className="nav-art-item" style={{ '--art-index': index }}><img src={src} alt="" fetchPriority="low" decoding="async" /></div></div>)}</div>
         <div className="nav-content"><p className="nav-caption">Explore the portfolio</p><nav aria-label="Sections">{[['Home', '#home'], ['About', '#about'], ['Experience', '#experience'], ['Moments', '#moments'], ['Explorations', '#work'], ['Contact', '#contact']].map(([label, href], index) => <a key={href} href={href} style={{ '--nav-index': index }} onClick={event => navigateFromMenu(event, href)}><span className="nav-word"><AnimatedLabel text={label} /></span></a>)}</nav><div className="nav-socials">{socials.map(social => <a key={social.name} href={social.href} target="_blank" rel="noreferrer"><AnimatedLabel text={social.name} /></a>)}</div></div>
       </div>
     </header>
