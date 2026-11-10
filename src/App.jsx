@@ -115,6 +115,14 @@ export default function App() {
     });
     return () => media.revert();
   }, [reducedMotion]);
+  useLayoutEffect(() => {
+    if (intro) return;
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    lenisRef.current?.scrollTo(0, { immediate: true, force: true });
+    if (photoRailRef.current) photoRailRef.current.scrollLeft = 0;
+    ScrollTrigger.clearScrollMemory('manual');
+    ScrollTrigger.refresh();
+  }, [intro]);
   useEffect(() => {
     if (!menuOpen) return;
     const close = event => { if (event.key === 'Escape') { setMenuOpen(false); menuRef.current?.focus(); } };

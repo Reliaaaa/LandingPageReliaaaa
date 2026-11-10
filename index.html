@@ -2,6 +2,13 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <script id="scroll-reset">
+      history.scrollRestoration = 'manual';
+      const navigation = performance.getEntriesByType?.('navigation')[0];
+      const isReload = navigation ? navigation.type === 'reload' : performance.navigation?.type === 1;
+      if (isReload && location.hash) history.replaceState(history.state, '', location.pathname + location.search);
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#f7f5ef" />
     <meta name="description" content="The personal portfolio of Varellio Louis Tinangon. A space for ideas, selected work, and new conversations." />
