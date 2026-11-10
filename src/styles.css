@@ -210,3 +210,6 @@ html.menu-lock,html.menu-lock body{overflow:hidden!important;overscroll-behavior
 @media(prefers-reduced-motion:no-preference){.site-header .nav-links.is-open.is-closing .nav-word{animation:nav-word-exit .7s cubic-bezier(.65,0,.35,1) both;animation-delay:calc((5 - var(--nav-index)) * 30ms)}.site-header .nav-links.is-open.is-closing .nav-word::after{animation:nav-word-exit-sweep .7s cubic-bezier(.65,0,.35,1) both;animation-delay:calc((5 - var(--nav-index)) * 30ms)}@keyframes nav-word-exit{0%,49%{clip-path:inset(0 0 0 0)}100%{clip-path:inset(0 100% 0 0)}}@keyframes nav-word-exit-sweep{0%{transform:scaleX(0);transform-origin:right}49%{transform:scaleX(1);transform-origin:right}50%{transform:scaleX(1);transform-origin:left}100%{transform:scaleX(0);transform-origin:left}}}
 
 @media(prefers-reduced-motion:no-preference){.site-header .nav-links.is-open .nav-art-item{animation:nav-photo-oval .75s cubic-bezier(.22,1,.36,1) both;animation-delay:calc(.24s + var(--art-index) * 55ms)}@keyframes nav-photo-oval{from{clip-path:ellipse(0% 0% at 50% 50%)}to{clip-path:ellipse(75% 75% at 50% 50%)}}}
+
+/* Keep the close label stable until the curtain has left the viewport. */
+.notch-trigger[data-curtain-closing="true"] :is(.menu-toggle-icon-stack,.menu-toggle-label-stack){transform:translateY(-50%)}
