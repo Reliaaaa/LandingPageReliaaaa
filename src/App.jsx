@@ -152,6 +152,30 @@ export default function App() {
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
   }, [menuOpen]);
+  useEffect(() => {
+    if (!menuOpen || reducedMotion || !navRef.current) return;
+    const menu = navRef.current;
+    const media = gsap.matchMedia();
+    media.add('(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)', () => {
+      const images = Array.from(menu.querySelectorAll('.nav-art-item img'));
+      gsap.set(images, { scale: 1.06 });
+      const movement = images.map((image, index) => ({
+        x: gsap.quickTo(image, 'x', { duration: .8, ease: 'power3.out' }),
+        y: gsap.quickTo(image, 'y', { duration: .8, ease: 'power3.out' }),
+        strength: [1, -.65, .8, -.9][index],
+      }));
+      const move = event => {
+        if (event.pointerType !== 'mouse') return;
+        const x = (event.clientX / window.innerWidth - .5) * 20;
+        const y = (event.clientY / window.innerHeight - .5) * 16;
+        movement.forEach(item => { item.x(x * item.strength); item.y(y * item.strength); });
+      };
+      const reset = () => movement.forEach(item => { item.x(0); item.y(0); });
+      menu.addEventListener('pointermove', move); menu.addEventListener('pointerleave', reset); window.addEventListener('blur', reset);
+      return () => { menu.removeEventListener('pointermove', move); menu.removeEventListener('pointerleave', reset); window.removeEventListener('blur', reset); gsap.killTweensOf(images); gsap.set(images, { clearProps: 'transform' }); };
+    });
+    return () => media.revert();
+  }, [menuOpen, reducedMotion]);
   useEffect(() => { if (activeProject) dialogRef.current?.showModal(); }, [activeProject]);
   useEffect(() => {
     if (reducedMotion || window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window) || !Element.prototype.animate) return;
@@ -212,7 +236,7 @@ export default function App() {
       <button ref={menuRef} className="notch-trigger" type="button" aria-label="Open navigation menu" aria-expanded={menuOpen} aria-controls="main-nav" aria-hidden={menuOpen} inert={menuOpen} disabled={intro} onClick={() => setMenuOpen(true)}><svg width="17" height="17" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M219.31,108.68l-80-80a16,16,0,0,0-22.62,0l-80,80A15.87,15.87,0,0,0,32,120v96a8,8,0,0,0,8,8h64a8,8,0,0,0,8-8V160h32v56a8,8,0,0,0,8,8h64a8,8,0,0,0,8-8V120A15.87,15.87,0,0,0,219.31,108.68ZM208,208H160V152a8,8,0,0,0-8-8H104a8,8,0,0,0-8,8v56H48V120l80-80,80,80Z" /></svg><span>Menu</span></button>
       <div ref={navRef} id="main-nav" className={menuOpen ? 'nav-links is-open' : 'nav-links'} role="dialog" aria-modal="true" aria-label="Navigation menu" aria-hidden={!menuOpen} inert={!menuOpen} data-lenis-prevent>
         <button className="nav-close" type="button" aria-label="Close navigation menu" onClick={() => { setMenuOpen(false); window.requestAnimationFrame(() => menuRef.current?.focus({ preventScroll: true })); }}><X size={20} aria-hidden="true" /><span>Close</span></button>
-        <div className="nav-art" aria-hidden="true"><img src="/moments/moment-12.jpg" alt="" loading="lazy" /><img src="/moments/moment-04.jpg" alt="" loading="lazy" /><img src="/about-portrait.png" alt="" loading="lazy" /></div>
+        <div className="nav-art" aria-hidden="true">{['/moments/moment-07.jpg', '/moments/moment-02.jpg', '/moments/moment-08.jpg', '/moments/moment-12.jpg'].map((src, index) => <div className="nav-art-item" key={src} style={{ '--art-index': index }}><img src={src} alt="" fetchPriority="low" /></div>)}</div>
         <div className="nav-content"><p className="nav-caption">Explore the portfolio</p><nav aria-label="Sections">{[['Home', '#home'], ['About', '#about'], ['Experience', '#experience'], ['Moments', '#moments'], ['Explorations', '#work'], ['Contact', '#contact']].map(([label, href], index) => <a key={href} href={href} style={{ '--nav-index': index }} onClick={event => navigateFromMenu(event, href)}>{label}</a>)}</nav><div className="nav-socials">{socials.map(social => <a key={social.name} href={social.href} target="_blank" rel="noreferrer">{social.name}</a>)}</div></div>
       </div>
     </header>
