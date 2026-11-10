@@ -183,4 +183,12 @@ html.menu-lock,html.menu-lock body{overflow:hidden!important;overscroll-behavior
 .button-roll{display:inline-block;overflow:hidden;vertical-align:middle;line-height:1.15}.button-roll-sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}.button-roll-letters{display:inline-flex;white-space:pre}.button-roll-char{position:relative;display:inline-block}.button-roll-char::after{content:attr(data-char);position:absolute;top:100%;left:0}.nav-word .button-roll{line-height:1.05}
 @media(prefers-reduced-motion:no-preference){.button-roll-char{transition:transform .35s cubic-bezier(.76,0,.24,1);transition-delay:calc(var(--roll-index) * 20ms)}:is(a,button):focus-visible .button-roll-char{transform:translate3d(0,-100%,0)}.hero-marquee,.marquee-track{backface-visibility:hidden;will-change:transform}.marquee-track{animation-name:marquee-scroll-smooth}@keyframes marquee-scroll-smooth{from{transform:translate3d(0,0,0)}to{transform:translate3d(-50%,0,0)}}}
 @media(hover:hover) and (prefers-reduced-motion:no-preference){:is(a,button):hover .button-roll-char{transform:translate3d(0,-100%,0)}}
+.nav-socials a:hover,.nav-socials a:focus-visible{background:transparent;color:#f1f5f7;border-radius:0}
 
+
+/* Move the photo frames independently of their opening reveal. */
+.nav-art-shift{min-width:0;min-height:0}.nav-art-shift:first-child{grid-row:span 3}.nav-art-shift .nav-art-item{height:100%}.nav-art-shift:first-child .nav-art-item{grid-row:auto}.nav-art{overflow:hidden}
+.nav-close{background:rgba(12,35,49,.96);color:#f6f7f8;border-color:rgba(139,209,226,.28);box-shadow:0 8px 30px #06131d66}.nav-close-icon{display:inline-flex;flex-direction:column;height:17px;overflow:hidden}.nav-close-icon svg{flex:none;transition:transform .45s cubic-bezier(.22,1,.36,1)}.nav-close:hover .nav-close-icon svg,.nav-close:focus-visible .nav-close-icon svg{transform:translateY(-17px)}
+@media(max-width:800px){.nav-art-shift:first-child{grid-row:auto}}
+@media(prefers-reduced-motion:reduce){.nav-close-icon svg{transition:none}}
+.nav-art-shift:nth-child(3) .nav-art-item{background:#0c2839}.nav-art-shift:nth-child(3) img{object-fit:contain}
