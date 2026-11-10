@@ -6,7 +6,7 @@ import { OverlayScrollbars } from 'overlayscrollbars';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 gsap.registerPlugin(ScrollTrigger);
-import { ArrowDown, ArrowUpRight, ChevronDown, Menu, X } from 'lucide-react';
+import { ArrowDown, ArrowUpRight, ChevronDown, X } from 'lucide-react';
 
 const linkedin = 'https://www.linkedin.com/in/varellio-louis-tinangon-4172702a0/';
 const socials = [
@@ -186,7 +186,7 @@ export default function App() {
     <div className="ambient-bg" aria-hidden="true"><span /><span /><span /></div>
     <a href="#main" className="skip-link" onClick={() => { setIntro(false); document.getElementById('main')?.focus({ preventScroll: true }); }}>Skip to content</a>
     <header className={intro ? "site-header is-intro" : "site-header"} onMouseEnter={() => { if (window.matchMedia('(hover: hover)').matches) setMenuOpen(true); }} onMouseLeave={event => { if (!event.currentTarget.contains(document.activeElement)) setMenuOpen(false); }} onFocus={event => { if (!event.currentTarget.contains(event.relatedTarget) && event.target.matches(':focus-visible')) setMenuOpen(true); }} onBlur={closeMenuOnBlur}>
-      <button ref={menuRef} className="notch-trigger" type="button" aria-label="Navigation menu" aria-expanded={menuOpen} aria-controls="main-nav" onClick={() => setMenuOpen(open => !open)}><Menu size={17} /><span>Menu</span><ChevronDown size={16} /></button>
+      <button ref={menuRef} className="notch-trigger" type="button" aria-label="Navigation menu" aria-expanded={menuOpen} aria-controls="main-nav" onClick={() => setMenuOpen(open => !open)}><svg width="17" height="17" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M219.31,108.68l-80-80a16,16,0,0,0-22.62,0l-80,80A15.87,15.87,0,0,0,32,120v96a8,8,0,0,0,8,8h64a8,8,0,0,0,8-8V160h32v56a8,8,0,0,0,8,8h64a8,8,0,0,0,8-8V120A15.87,15.87,0,0,0,219.31,108.68ZM208,208H160V152a8,8,0,0,0-8-8H104a8,8,0,0,0-8,8v56H48V120l80-80,80,80Z" /></svg><span>Menu</span><ChevronDown size={16} /></button>
       <nav id="main-nav" className={menuOpen ? 'nav-links is-open' : 'nav-links'} aria-label="Main navigation" aria-hidden={!menuOpen} inert={!menuOpen}>
         <a href="#about" onClick={() => setMenuOpen(false)}>About</a><a href="#experience" onClick={() => setMenuOpen(false)}>Experience</a><a href="#work" onClick={() => setMenuOpen(false)}>Explorations</a><a href="#contact" onClick={() => setMenuOpen(false)}>Contact</a>
       </nav>
