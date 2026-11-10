@@ -184,7 +184,7 @@ export default function App() {
       const movement = frames.map((frame, index) => ({
         x: gsap.quickTo(frame, 'x', { duration: 1, ease: 'power3.out' }),
         y: gsap.quickTo(frame, 'y', { duration: 1.2, ease: 'power3.out' }),
-        strength: [1, -1, -1, 1][index],
+        strength: [1, -.55, -.9, -1.25][index],
       }));
       const move = event => {
         if (event.pointerType !== 'mouse') return;
