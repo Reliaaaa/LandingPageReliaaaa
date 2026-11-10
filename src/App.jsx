@@ -63,7 +63,6 @@ export default function App() {
   const photoSectionRef = useRef(null);
   const photoRailRef = useRef(null);
   const lenisRef = useRef(null);
-  const cursorRef = useRef(null);
 
   useLayoutEffect(() => {
     const previous = window.history.scrollRestoration;
@@ -124,39 +123,6 @@ export default function App() {
   }, [menuOpen]);
   useEffect(() => { if (activeProject) dialogRef.current?.showModal(); }, [activeProject]);
   useEffect(() => {
-    if (intro || reducedMotion) return;
-    const cursor = cursorRef.current;
-    if (!cursor) return;
-    const media = gsap.matchMedia();
-    media.add('(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)', () => {
-      gsap.set(cursor, { xPercent: -50, yPercent: -50, opacity: 0 });
-      const moveX = gsap.quickTo(cursor, 'x', { duration: .35, ease: 'power3.out' });
-      const moveY = gsap.quickTo(cursor, 'y', { duration: .35, ease: 'power3.out' });
-      let visible = false;
-      const follow = event => {
-        if (event.pointerType !== 'mouse') return;
-        if (!visible) { gsap.set(cursor, { x: event.clientX, y: event.clientY, opacity: 1 }); visible = true; }
-        moveX(event.clientX); moveY(event.clientY);
-      };
-      const hide = () => { visible = false; gsap.set(cursor, { opacity: 0 }); cursor.classList.remove('is-active'); };
-      const leaveDocument = event => { if (!event.relatedTarget) hide(); };
-      const targets = document.querySelectorAll('.hero-buttons a, .notch-trigger, .nav-links a, .underlined-link, .contact-social, .project-card');
-      const cleanups = Array.from(targets, target => {
-        let bounds;
-        const x = gsap.quickTo(target, 'x', { duration: .35, ease: 'power3.out' });
-        const y = gsap.quickTo(target, 'y', { duration: .35, ease: 'power3.out' });
-        const enter = event => { if (event.pointerType !== 'mouse') return; bounds = target.getBoundingClientRect(); cursor.classList.add('is-active'); };
-        const move = event => { if (event.pointerType !== 'mouse' || !bounds) return; x(gsap.utils.clamp(-12, 12, (event.clientX - bounds.left - bounds.width / 2) * .16)); y(gsap.utils.clamp(-12, 12, (event.clientY - bounds.top - bounds.height / 2) * .16)); };
-        const leave = () => { bounds = null; x(0); y(0); cursor.classList.remove('is-active'); };
-        target.addEventListener('pointerenter', enter); target.addEventListener('pointermove', move); target.addEventListener('pointerleave', leave);
-        return () => { target.removeEventListener('pointerenter', enter); target.removeEventListener('pointermove', move); target.removeEventListener('pointerleave', leave); gsap.killTweensOf(target); gsap.set(target, { clearProps: 'transform' }); };
-      });
-      window.addEventListener('pointermove', follow); window.addEventListener('blur', hide); document.addEventListener('pointerout', leaveDocument);
-      return () => { window.removeEventListener('pointermove', follow); window.removeEventListener('blur', hide); document.removeEventListener('pointerout', leaveDocument); cleanups.forEach(cleanup => cleanup()); gsap.killTweensOf(cursor); hide(); };
-    });
-    return () => media.revert();
-  }, [intro, reducedMotion]);
-  useEffect(() => {
     if (reducedMotion || window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window) || !Element.prototype.animate) return;
     const animations = [];
     const experience = document.getElementById('experience');
@@ -209,7 +175,6 @@ export default function App() {
   const closeMenuOnBlur = event => { if (!event.currentTarget.contains(event.relatedTarget)) setMenuOpen(false); };
   return <>
     <div className="ambient-bg" aria-hidden="true"><span /><span /><span /></div>
-    <div ref={cursorRef} className="magnetic-cursor" aria-hidden="true" />
     <a href="#main" className="skip-link" onClick={() => { setIntro(false); document.getElementById('main')?.focus({ preventScroll: true }); }}>Skip to content</a>
     <header className={intro ? "site-header is-intro" : "site-header"} onMouseEnter={() => { if (window.matchMedia('(hover: hover)').matches) setMenuOpen(true); }} onMouseLeave={event => { if (!event.currentTarget.contains(document.activeElement)) setMenuOpen(false); }} onFocus={event => { if (!event.currentTarget.contains(event.relatedTarget) && event.target.matches(':focus-visible')) setMenuOpen(true); }} onBlur={closeMenuOnBlur}>
       <button ref={menuRef} className="notch-trigger" type="button" aria-label="Navigation menu" aria-expanded={menuOpen} aria-controls="main-nav" onClick={() => setMenuOpen(open => !open)}><Menu size={17} /><span>Menu</span><ChevronDown size={16} /></button>
