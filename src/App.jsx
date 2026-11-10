@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useReducedMotion } from 'framer-motion';
 import Lenis from 'lenis';
 import InterestOverlap from './InterestOverlap.jsx';
@@ -61,6 +61,8 @@ export default function App() {
   const reducedMotion = useReducedMotion();
   const [intro, setIntro] = useState(() => !window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [menuClosing, setMenuClosing] = useState(false);
+  const menuCloseTimer = useRef(null);
   const [activeProject, setActiveProject] = useState(null);
   const menuRef = useRef(null);
   const navRef = useRef(null);
@@ -158,11 +160,25 @@ export default function App() {
     ScrollTrigger.clearScrollMemory('manual');
     ScrollTrigger.update();
   }, [intro]);
+  const closeMenu = useCallback(() => {
+    if (menuCloseTimer.current !== null) return;
+    if (reducedMotion || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setMenuOpen(false);
+      return;
+    }
+    setMenuClosing(true);
+    menuCloseTimer.current = window.setTimeout(() => {
+      setMenuOpen(false);
+      setMenuClosing(false);
+      menuCloseTimer.current = null;
+    }, 850);
+  }, [reducedMotion]);
+  useEffect(() => () => window.clearTimeout(menuCloseTimer.current), []);
   useEffect(() => {
     if (!menuOpen) return;
     menuRef.current?.focus({ preventScroll: true });
     const handleKey = event => {
-      if (event.key === 'Escape') { setMenuOpen(false); window.requestAnimationFrame(() => menuRef.current?.focus({ preventScroll: true })); return; }
+      if (event.key === 'Escape') { closeMenu(); window.requestAnimationFrame(() => menuRef.current?.focus({ preventScroll: true })); return; }
       if (event.key !== 'Tab') return;
       const focusable = [menuRef.current, ...Array.from(navRef.current?.querySelectorAll('button:not([disabled]), a[href]') || [])].filter(Boolean);
       if (!focusable.length) return;
@@ -172,7 +188,7 @@ export default function App() {
     };
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
-  }, [menuOpen]);
+  }, [menuOpen, closeMenu]);
   useEffect(() => {
     if (!menuOpen || reducedMotion || !navRef.current) return;
     const menu = navRef.current;
@@ -250,13 +266,13 @@ export default function App() {
   }, [reducedMotion]);
 
   const closeProject = () => { dialogRef.current?.close(); setActiveProject(null); };
-  const navigateFromMenu = (event, target) => { event.preventDefault(); pendingNavigation.current = target; setMenuOpen(false); };
+  const navigateFromMenu = (event, target) => { event.preventDefault(); if (menuCloseTimer.current !== null) return; pendingNavigation.current = target; closeMenu(); };
   return <>
     <div className="ambient-bg" aria-hidden="true"><span /><span /><span /></div>
     <a href="#main" className="skip-link" onClick={() => { setIntro(false); document.getElementById('main')?.focus({ preventScroll: true }); }}>Skip to content</a>
     <header className={intro ? "site-header is-intro" : "site-header"} role={menuOpen ? "dialog" : undefined} aria-modal={menuOpen || undefined} aria-label={menuOpen ? "Navigation menu" : undefined}>
-      <button ref={menuRef} className="notch-trigger" type="button" aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"} aria-expanded={menuOpen} aria-controls="main-nav" disabled={intro} onClick={() => setMenuOpen(open => !open)}><span className="menu-toggle-icon" aria-hidden="true"><span className="menu-toggle-icon-stack"><svg width="17" height="17" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M219.31,108.68l-80-80a16,16,0,0,0-22.62,0l-80,80A15.87,15.87,0,0,0,32,120v96a8,8,0,0,0,8,8h64a8,8,0,0,0,8-8V160h32v56a8,8,0,0,0,8,8h64a8,8,0,0,0,8-8V120A15.87,15.87,0,0,0,219.31,108.68ZM208,208H160V152a8,8,0,0,0-8-8H104a8,8,0,0,0-8,8v56H48V120l80-80,80,80Z" /></svg><X size={17} /></span></span><span className="menu-toggle-label" aria-hidden="true"><span className="menu-toggle-label-stack"><AnimatedLabel text="Menu" /><AnimatedLabel text="Close" /></span></span></button>
-      <div ref={navRef} id="main-nav" className={menuOpen ? 'nav-links is-open' : 'nav-links'} aria-hidden={!menuOpen} inert={!menuOpen} data-lenis-prevent>
+      <button ref={menuRef} className="notch-trigger" type="button" aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"} aria-expanded={menuOpen} aria-controls="main-nav" disabled={intro} onClick={() => { if (menuOpen) closeMenu(); else setMenuOpen(true); }}><span className="menu-toggle-icon" aria-hidden="true"><span className="menu-toggle-icon-stack"><svg width="17" height="17" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M219.31,108.68l-80-80a16,16,0,0,0-22.62,0l-80,80A15.87,15.87,0,0,0,32,120v96a8,8,0,0,0,8,8h64a8,8,0,0,0,8-8V160h32v56a8,8,0,0,0,8,8h64a8,8,0,0,0,8-8V120A15.87,15.87,0,0,0,219.31,108.68ZM208,208H160V152a8,8,0,0,0-8-8H104a8,8,0,0,0-8,8v56H48V120l80-80,80,80Z" /></svg><X size={17} /></span></span><span className="menu-toggle-label" aria-hidden="true"><span className="menu-toggle-label-stack"><AnimatedLabel text="Menu" /><AnimatedLabel text="Close" /></span></span></button>
+      <div ref={navRef} id="main-nav" className={menuOpen ? `nav-links is-open${menuClosing ? ' is-closing' : ''}` : 'nav-links'} aria-hidden={!menuOpen} inert={!menuOpen} data-lenis-prevent>
         <div className="nav-art" aria-hidden="true">{['/images/optimized/menu-v1-portrait.webp', '/images/optimized/menu-v1-horizontal.webp', '/images/optimized/menu-v1-frateran.webp', '/images/optimized/menu-v1-speaking.webp'].map((src, index) => <div className="nav-art-shift" key={src}><div className="nav-art-item" style={{ '--art-index': index }}><img src={src} alt="" fetchPriority="low" decoding="async" /></div></div>)}</div>
         <div className="nav-content"><p className="nav-caption">Explore the portfolio</p><nav aria-label="Sections">{[['Home', '#home'], ['About', '#about'], ['Experience', '#experience'], ['Moments', '#moments'], ['Explorations', '#work'], ['Contact', '#contact']].map(([label, href], index) => <a key={href} href={href} style={{ '--nav-index': index }} onClick={event => navigateFromMenu(event, href)}><span className="nav-word"><AnimatedLabel text={label} /></span></a>)}</nav><div className="nav-socials">{socials.map(social => <a key={social.name} href={social.href} target="_blank" rel="noreferrer"><AnimatedLabel text={social.name} /></a>)}</div></div>
       </div>
