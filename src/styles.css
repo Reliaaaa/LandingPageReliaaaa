@@ -213,3 +213,6 @@ html.menu-lock,html.menu-lock body{overflow:hidden!important;overscroll-behavior
 
 /* Keep the close label stable until the curtain has left the viewport. */
 .notch-trigger[data-curtain-closing="true"] :is(.menu-toggle-icon-stack,.menu-toggle-label-stack){transform:translateY(-50%)}
+
+/* Once the exit reveal is complete, keep every navigation link hidden while the curtain moves. */
+.site-header .nav-links.is-closing:not(.is-open) .nav-content nav{visibility:hidden}
