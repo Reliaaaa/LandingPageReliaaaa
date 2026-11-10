@@ -202,3 +202,6 @@ html.menu-lock,html.menu-lock body{overflow:hidden!important;overscroll-behavior
 /* One persistent button rolls between its open and close states. */
 .menu-toggle-icon,.menu-toggle-label{display:block;overflow:hidden}.menu-toggle-icon{width:17px;height:17px;flex:none}.menu-toggle-label{height:20px;min-width:4em}.menu-toggle-icon-stack,.menu-toggle-label-stack{display:flex;flex-direction:column;align-items:center}.menu-toggle-icon-stack>svg{display:block;flex:none;width:17px;height:17px;transform:none!important}.menu-toggle-label-stack>.button-roll{display:flex;align-items:center;justify-content:center;height:20px;flex:none}.notch-trigger[aria-expanded="true"] :is(.menu-toggle-icon-stack,.menu-toggle-label-stack){transform:translateY(-50%)}
 @media(prefers-reduced-motion:no-preference){.menu-toggle-icon-stack,.menu-toggle-label-stack{transition:transform .48s cubic-bezier(.76,0,.24,1)}}
+
+/* Clip the duplicate hover letters to their own line inside the toggle. */
+.notch-trigger .button-roll-letters{clip-path:inset(0 -2px)}
