@@ -6,7 +6,7 @@ import { OverlayScrollbars } from 'overlayscrollbars';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 gsap.registerPlugin(ScrollTrigger);
-import { ArrowDown, ArrowUpRight, ChevronDown, X } from 'lucide-react';
+import { ArrowDown, ArrowUpRight, X } from 'lucide-react';
 
 const linkedin = 'https://www.linkedin.com/in/varellio-louis-tinangon-4172702a0/';
 const socials = [
@@ -59,6 +59,8 @@ export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeProject, setActiveProject] = useState(null);
   const menuRef = useRef(null);
+  const navRef = useRef(null);
+  const pendingNavigation = useRef(null);
   const dialogRef = useRef(null);
   const photoSectionRef = useRef(null);
   const photoRailRef = useRef(null);
@@ -89,14 +91,26 @@ export default function App() {
     return () => { gsap.ticker.remove(tick); lenis.destroy(); lenisRef.current = null; };
   }, [reducedMotion]);
   useEffect(() => {
-    if (intro) lenisRef.current?.stop();
-    else lenisRef.current?.start();
-  }, [intro, reducedMotion]);
+    if (intro || menuOpen) { lenisRef.current?.stop(); return; }
+    lenisRef.current?.start();
+    const target = pendingNavigation.current;
+    if (!target) return;
+    pendingNavigation.current = null;
+    window.history.replaceState(window.history.state, '', target);
+    const destination = document.querySelector(target);
+    if (destination) { destination.tabIndex = -1; destination.focus({ preventScroll: true }); }
+    if (lenisRef.current) lenisRef.current.scrollTo(target, { offset: -95 });
+    else destination?.scrollIntoView({ behavior: reducedMotion ? 'instant' : 'smooth' });
+  }, [intro, menuOpen, reducedMotion]);
   useLayoutEffect(() => {
     document.documentElement.classList.toggle('intro-lock', intro);
     document.documentElement.classList.toggle('scroll-ready', !intro);
     return () => { document.documentElement.classList.remove('intro-lock', 'scroll-ready'); };
   }, [intro]);
+  useLayoutEffect(() => {
+    document.documentElement.classList.toggle('menu-lock', menuOpen);
+    return () => document.documentElement.classList.remove('menu-lock');
+  }, [menuOpen]);
   useEffect(() => {
     fetch('/api/analytics', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ event: 'page_view', path: window.location.pathname }) }).catch(() => {});
   }, []);
@@ -125,9 +139,18 @@ export default function App() {
   }, [intro]);
   useEffect(() => {
     if (!menuOpen) return;
-    const close = event => { if (event.key === 'Escape') { setMenuOpen(false); menuRef.current?.focus(); } };
-    window.addEventListener('keydown', close);
-    return () => window.removeEventListener('keydown', close);
+    navRef.current?.querySelector('.nav-close')?.focus({ preventScroll: true });
+    const handleKey = event => {
+      if (event.key === 'Escape') { setMenuOpen(false); window.requestAnimationFrame(() => menuRef.current?.focus({ preventScroll: true })); return; }
+      if (event.key !== 'Tab') return;
+      const focusable = Array.from(navRef.current?.querySelectorAll('button:not([disabled]), a[href]') || []);
+      if (!focusable.length) return;
+      const index = focusable.indexOf(document.activeElement);
+      if (event.shiftKey && index <= 0) { event.preventDefault(); focusable.at(-1).focus(); }
+      else if (!event.shiftKey && (index === -1 || index === focusable.length - 1)) { event.preventDefault(); focusable[0].focus(); }
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
   }, [menuOpen]);
   useEffect(() => { if (activeProject) dialogRef.current?.showModal(); }, [activeProject]);
   useEffect(() => {
@@ -181,17 +204,19 @@ export default function App() {
   }, [reducedMotion]);
 
   const closeProject = () => { dialogRef.current?.close(); setActiveProject(null); };
-  const closeMenuOnBlur = event => { if (!event.currentTarget.contains(event.relatedTarget)) setMenuOpen(false); };
+  const navigateFromMenu = (event, target) => { event.preventDefault(); pendingNavigation.current = target; setMenuOpen(false); };
   return <>
     <div className="ambient-bg" aria-hidden="true"><span /><span /><span /></div>
     <a href="#main" className="skip-link" onClick={() => { setIntro(false); document.getElementById('main')?.focus({ preventScroll: true }); }}>Skip to content</a>
-    <header className={intro ? "site-header is-intro" : "site-header"} onMouseEnter={() => { if (window.matchMedia('(hover: hover)').matches) setMenuOpen(true); }} onMouseLeave={event => { if (!event.currentTarget.contains(document.activeElement)) setMenuOpen(false); }} onFocus={event => { if (!event.currentTarget.contains(event.relatedTarget) && event.target.matches(':focus-visible')) setMenuOpen(true); }} onBlur={closeMenuOnBlur}>
-      <button ref={menuRef} className="notch-trigger" type="button" aria-label="Navigation menu" aria-expanded={menuOpen} aria-controls="main-nav" onClick={() => setMenuOpen(open => !open)}><svg width="17" height="17" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M219.31,108.68l-80-80a16,16,0,0,0-22.62,0l-80,80A15.87,15.87,0,0,0,32,120v96a8,8,0,0,0,8,8h64a8,8,0,0,0,8-8V160h32v56a8,8,0,0,0,8,8h64a8,8,0,0,0,8-8V120A15.87,15.87,0,0,0,219.31,108.68ZM208,208H160V152a8,8,0,0,0-8-8H104a8,8,0,0,0-8,8v56H48V120l80-80,80,80Z" /></svg><span>Menu</span><ChevronDown size={16} /></button>
-      <nav id="main-nav" className={menuOpen ? 'nav-links is-open' : 'nav-links'} aria-label="Main navigation" aria-hidden={!menuOpen} inert={!menuOpen}>
-        <a href="#about" onClick={() => setMenuOpen(false)}>About</a><a href="#experience" onClick={() => setMenuOpen(false)}>Experience</a><a href="#work" onClick={() => setMenuOpen(false)}>Explorations</a><a href="#contact" onClick={() => setMenuOpen(false)}>Contact</a>
-      </nav>
+    <header className={intro ? "site-header is-intro" : "site-header"}>
+      <button ref={menuRef} className="notch-trigger" type="button" aria-label="Open navigation menu" aria-expanded={menuOpen} aria-controls="main-nav" aria-hidden={menuOpen} inert={menuOpen} disabled={intro} onClick={() => setMenuOpen(true)}><svg width="17" height="17" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M219.31,108.68l-80-80a16,16,0,0,0-22.62,0l-80,80A15.87,15.87,0,0,0,32,120v96a8,8,0,0,0,8,8h64a8,8,0,0,0,8-8V160h32v56a8,8,0,0,0,8,8h64a8,8,0,0,0,8-8V120A15.87,15.87,0,0,0,219.31,108.68ZM208,208H160V152a8,8,0,0,0-8-8H104a8,8,0,0,0-8,8v56H48V120l80-80,80,80Z" /></svg><span>Menu</span></button>
+      <div ref={navRef} id="main-nav" className={menuOpen ? 'nav-links is-open' : 'nav-links'} role="dialog" aria-modal="true" aria-label="Navigation menu" aria-hidden={!menuOpen} inert={!menuOpen} data-lenis-prevent>
+        <button className="nav-close" type="button" aria-label="Close navigation menu" onClick={() => { setMenuOpen(false); window.requestAnimationFrame(() => menuRef.current?.focus({ preventScroll: true })); }}><X size={20} aria-hidden="true" /><span>Close</span></button>
+        <div className="nav-art" aria-hidden="true"><img src="/moments/moment-12.jpg" alt="" loading="lazy" /><img src="/moments/moment-04.jpg" alt="" loading="lazy" /><img src="/about-portrait.png" alt="" loading="lazy" /></div>
+        <div className="nav-content"><p className="nav-caption">Explore the portfolio</p><nav aria-label="Sections">{[['Home', '#home'], ['About', '#about'], ['Experience', '#experience'], ['Moments', '#moments'], ['Explorations', '#work'], ['Contact', '#contact']].map(([label, href], index) => <a key={href} href={href} style={{ '--nav-index': index }} onClick={event => navigateFromMenu(event, href)}>{label}</a>)}</nav><div className="nav-socials">{socials.map(social => <a key={social.name} href={social.href} target="_blank" rel="noreferrer">{social.name}</a>)}</div></div>
+      </div>
     </header>
-    <main id="main" tabIndex={-1}>
+    <main id="main" tabIndex={-1} inert={menuOpen}>
       <section id="home" className={intro ? "hero section-wrap is-intro" : "hero section-wrap"}>
         <Marquee />
         <div className="hero-copy"><h1 aria-label="Varellio Louis Tinangon"><span className="hero-name-first" aria-hidden="true">{Array.from('VΛRELLIO LOUIS', (letter, index) => <span className="hero-name-letter" style={{ '--letter-index': index }} key={index}>{letter}</span>)}</span><span className="hero-name-last" aria-hidden="true">{Array.from('TINANGON', (letter, index) => <span className="hero-name-letter" style={{ '--letter-index': index + 14 }} key={index}>{letter}</span>)}</span></h1></div>
@@ -216,7 +241,7 @@ export default function App() {
       <section id="work" className="work-section section-wrap"><div className="section-heading"><div><div className="section-index">04 / Explorations</div><h2>Selected <span>possibilities.</span></h2></div><p>A space for ideas and what comes next.</p></div><div className="project-grid">{concepts.map(project => { const Card = project.href ? 'a' : 'button'; return <Card key={project.number} className="project-card" {...(project.href ? { href: project.href, target: '_blank', rel: 'noopener noreferrer', 'aria-label': 'Watch Godspeed on Instagram in a new tab' } : { type: 'button', onClick: () => setActiveProject(project), 'aria-label': `View concept placeholder ${project.number}: ${project.title}` })}><div className={`project-art ${project.style}${project.image ? ' has-image' : ''}`}>{project.image ? <img src={project.image} alt="" loading="lazy" /> : <><span>EXPLORATION {project.number}</span><span className="concept-symbol" aria-hidden="true">{project.style === 'orbit' ? '◉' : project.style === 'type' ? '↗' : '✳'}</span><span className="placeholder-label">CONCEPT / PLACEHOLDER</span></>}</div><div className="project-info"><span>{project.href ? 'Graduation Film, Film Editor' : 'Concept / Placeholder'}</span><h3 className={project.href ? 'project-title-reveal' : undefined}>{project.title}</h3><p>{project.href ? 'Watch on Instagram' : 'Explore the idea'} <ArrowUpRight size={15} /></p></div></Card>; })}</div></section>
       <section id="contact" className="contact-section section-wrap"><div className="contact-copy"><div className="section-index">05 / Contact</div><h2>Let’s stay<br /><span>connected.</span></h2><p>Find me online and let’s start a conversation.</p></div><div className="contact-socials" role="group" aria-label="Social media profiles">{socials.map(social => <a className="contact-social" key={social.name} href={social.href} target="_blank" rel="noreferrer"><span className="contact-social-icon"><img src={`/social/${social.icon}.svg`} alt="" width="24" height="24" loading="lazy" /></span><span className="contact-social-label"><strong>{social.name}</strong><small>{social.handle}</small></span><ArrowUpRight className="contact-social-arrow" size={20} aria-hidden="true" /></a>)}</div></section>
     </main>
-    <footer className="site-footer section-wrap"><span>© {new Date().getFullYear()} Varellio Louis Tinangon</span><a href={linkedin} target="_blank" rel="noreferrer">LinkedIn <ArrowUpRight size={14} /></a><a href="#home">Back to top ↑</a></footer>
+    <footer className="site-footer section-wrap" inert={menuOpen}><span>© {new Date().getFullYear()} Varellio Louis Tinangon</span><a href={linkedin} target="_blank" rel="noreferrer">LinkedIn <ArrowUpRight size={14} /></a><a href="#home">Back to top ↑</a></footer>
     <dialog data-lenis-prevent ref={dialogRef} onCancel={closeProject} onClick={e => { if (e.target === e.currentTarget) closeProject(); }} className="project-dialog" aria-labelledby="project-title">{activeProject && <><button className="dialog-close" onClick={closeProject} aria-label="Close project"><X /></button><div className="eyebrow">CONCEPT {activeProject.number} / PLACEHOLDER</div><h2 id="project-title">{activeProject.title}</h2><p>{activeProject.description}</p><p>This is sample portfolio content; no completed project, client relationship, or result is claimed.</p><button className="button button-dark" onClick={closeProject}>Back to exploring</button></>}</dialog>
   </>;
 }
