@@ -205,3 +205,8 @@ html.menu-lock,html.menu-lock body{overflow:hidden!important;overscroll-behavior
 
 /* Clip the duplicate hover letters to their own line inside the toggle. */
 .notch-trigger .button-roll-letters{clip-path:inset(0 -2px)}
+
+/* Reverse the word reveal before lifting the navigation curtain. */
+@media(prefers-reduced-motion:no-preference){.site-header .nav-links.is-open.is-closing .nav-word,.site-header .nav-links.is-open.is-closing .nav-word::after{animation-duration:.7s;animation-direction:reverse;animation-delay:calc((5 - var(--nav-index)) * 30ms)}}
+
+@media(prefers-reduced-motion:no-preference){.site-header .nav-links.is-open .nav-art-item{animation:nav-photo-oval .75s cubic-bezier(.22,1,.36,1) both;animation-delay:calc(.24s + var(--art-index) * 55ms)}.site-header .nav-links.is-open.is-closing .nav-art-item{animation-direction:reverse;animation-duration:.65s;animation-delay:calc((3 - var(--art-index)) * 50ms)}@keyframes nav-photo-oval{from{clip-path:ellipse(0% 0% at 50% 50%)}to{clip-path:ellipse(75% 75% at 50% 50%)}}}
