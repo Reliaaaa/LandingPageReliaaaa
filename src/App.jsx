@@ -160,11 +160,11 @@ export default function App() {
   }, [intro]);
   useEffect(() => {
     if (!menuOpen) return;
-    navRef.current?.querySelector('.nav-close')?.focus({ preventScroll: true });
+    menuRef.current?.focus({ preventScroll: true });
     const handleKey = event => {
       if (event.key === 'Escape') { setMenuOpen(false); window.requestAnimationFrame(() => menuRef.current?.focus({ preventScroll: true })); return; }
       if (event.key !== 'Tab') return;
-      const focusable = Array.from(navRef.current?.querySelectorAll('button:not([disabled]), a[href]') || []);
+      const focusable = [menuRef.current, ...Array.from(navRef.current?.querySelectorAll('button:not([disabled]), a[href]') || [])].filter(Boolean);
       if (!focusable.length) return;
       const index = focusable.indexOf(document.activeElement);
       if (event.shiftKey && index <= 0) { event.preventDefault(); focusable.at(-1).focus(); }
@@ -254,10 +254,9 @@ export default function App() {
   return <>
     <div className="ambient-bg" aria-hidden="true"><span /><span /><span /></div>
     <a href="#main" className="skip-link" onClick={() => { setIntro(false); document.getElementById('main')?.focus({ preventScroll: true }); }}>Skip to content</a>
-    <header className={intro ? "site-header is-intro" : "site-header"}>
-      <button ref={menuRef} className="notch-trigger" type="button" aria-label="Open navigation menu" aria-expanded={menuOpen} aria-controls="main-nav" aria-hidden={menuOpen} inert={menuOpen} disabled={intro} onClick={() => setMenuOpen(true)}><svg width="17" height="17" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M219.31,108.68l-80-80a16,16,0,0,0-22.62,0l-80,80A15.87,15.87,0,0,0,32,120v96a8,8,0,0,0,8,8h64a8,8,0,0,0,8-8V160h32v56a8,8,0,0,0,8,8h64a8,8,0,0,0,8-8V120A15.87,15.87,0,0,0,219.31,108.68ZM208,208H160V152a8,8,0,0,0-8-8H104a8,8,0,0,0-8,8v56H48V120l80-80,80,80Z" /></svg><AnimatedLabel text="Menu" /></button>
-      <div ref={navRef} id="main-nav" className={menuOpen ? 'nav-links is-open' : 'nav-links'} role="dialog" aria-modal="true" aria-label="Navigation menu" aria-hidden={!menuOpen} inert={!menuOpen} data-lenis-prevent>
-        <button className="nav-close" type="button" aria-label="Close navigation menu" onClick={() => { setMenuOpen(false); window.requestAnimationFrame(() => menuRef.current?.focus({ preventScroll: true })); }}><span className="nav-close-icon" aria-hidden="true"><X size={17} /><X size={17} /></span><AnimatedLabel text="Close" /></button>
+    <header className={intro ? "site-header is-intro" : "site-header"} role={menuOpen ? "dialog" : undefined} aria-modal={menuOpen || undefined} aria-label={menuOpen ? "Navigation menu" : undefined}>
+      <button ref={menuRef} className="notch-trigger" type="button" aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"} aria-expanded={menuOpen} aria-controls="main-nav" disabled={intro} onClick={() => setMenuOpen(open => !open)}><svg width="17" height="17" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M219.31,108.68l-80-80a16,16,0,0,0-22.62,0l-80,80A15.87,15.87,0,0,0,32,120v96a8,8,0,0,0,8,8h64a8,8,0,0,0,8-8V160h32v56a8,8,0,0,0,8,8h64a8,8,0,0,0,8-8V120A15.87,15.87,0,0,0,219.31,108.68ZM208,208H160V152a8,8,0,0,0-8-8H104a8,8,0,0,0-8,8v56H48V120l80-80,80,80Z" /></svg><AnimatedLabel text="Menu" /></button>
+      <div ref={navRef} id="main-nav" className={menuOpen ? 'nav-links is-open' : 'nav-links'} aria-hidden={!menuOpen} inert={!menuOpen} data-lenis-prevent>
         <div className="nav-art" aria-hidden="true">{['/images/optimized/menu-v1-portrait.webp', '/images/optimized/menu-v1-horizontal.webp', '/images/optimized/menu-v1-frateran.webp', '/images/optimized/menu-v1-speaking.webp'].map((src, index) => <div className="nav-art-shift" key={src}><div className="nav-art-item" style={{ '--art-index': index }}><img src={src} alt="" fetchPriority="low" decoding="async" /></div></div>)}</div>
         <div className="nav-content"><p className="nav-caption">Explore the portfolio</p><nav aria-label="Sections">{[['Home', '#home'], ['About', '#about'], ['Experience', '#experience'], ['Moments', '#moments'], ['Explorations', '#work'], ['Contact', '#contact']].map(([label, href], index) => <a key={href} href={href} style={{ '--nav-index': index }} onClick={event => navigateFromMenu(event, href)}><span className="nav-word"><AnimatedLabel text={label} /></span></a>)}</nav><div className="nav-socials">{socials.map(social => <a key={social.name} href={social.href} target="_blank" rel="noreferrer"><AnimatedLabel text={social.name} /></a>)}</div></div>
       </div>
