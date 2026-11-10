@@ -85,6 +85,13 @@ export default function App() {
     return () => { window.cancelAnimationFrame(frame); instance?.destroy(); };
   }, []);
   useEffect(() => {
+    let active = true;
+    document.fonts?.ready.then(() => {
+      if (active && document.documentElement.classList.contains('intro-lock')) ScrollTrigger.refresh();
+    });
+    return () => { active = false; };
+  }, []);
+  useEffect(() => {
     if (reducedMotion || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const lenis = new Lenis({ anchors: { offset: -95 }, syncTouch: false });
     lenis.stop();
@@ -149,7 +156,7 @@ export default function App() {
     lenisRef.current?.scrollTo(0, { immediate: true, force: true });
     if (photoRailRef.current) photoRailRef.current.scrollLeft = 0;
     ScrollTrigger.clearScrollMemory('manual');
-    ScrollTrigger.refresh();
+    ScrollTrigger.update();
   }, [intro]);
   useEffect(() => {
     if (!menuOpen) return;
@@ -250,7 +257,7 @@ export default function App() {
       <button ref={menuRef} className="notch-trigger" type="button" aria-label="Open navigation menu" aria-expanded={menuOpen} aria-controls="main-nav" aria-hidden={menuOpen} inert={menuOpen} disabled={intro} onClick={() => setMenuOpen(true)}><svg width="17" height="17" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M219.31,108.68l-80-80a16,16,0,0,0-22.62,0l-80,80A15.87,15.87,0,0,0,32,120v96a8,8,0,0,0,8,8h64a8,8,0,0,0,8-8V160h32v56a8,8,0,0,0,8,8h64a8,8,0,0,0,8-8V120A15.87,15.87,0,0,0,219.31,108.68ZM208,208H160V152a8,8,0,0,0-8-8H104a8,8,0,0,0-8,8v56H48V120l80-80,80,80Z" /></svg><AnimatedLabel text="Menu" /></button>
       <div ref={navRef} id="main-nav" className={menuOpen ? 'nav-links is-open' : 'nav-links'} role="dialog" aria-modal="true" aria-label="Navigation menu" aria-hidden={!menuOpen} inert={!menuOpen} data-lenis-prevent>
         <button className="nav-close" type="button" aria-label="Close navigation menu" onClick={() => { setMenuOpen(false); window.requestAnimationFrame(() => menuRef.current?.focus({ preventScroll: true })); }}><X size={20} aria-hidden="true" /><AnimatedLabel text="Close" /></button>
-        <div className="nav-art" aria-hidden="true">{['/moments/moment-07.jpg', '/moments/moment-02.jpg', '/menu-frateran-cup.jpg', '/moments/moment-12.jpg'].map((src, index) => <div className="nav-art-item" key={src} style={{ '--art-index': index }}><img src={src} alt="" fetchPriority="low" /></div>)}</div>
+        <div className="nav-art" aria-hidden="true">{['/images/optimized/menu-v1-portrait.webp', '/images/optimized/menu-v1-horizontal.webp', '/images/optimized/menu-v1-frateran.webp', '/images/optimized/menu-v1-speaking.webp'].map((src, index) => <div className="nav-art-item" key={src} style={{ '--art-index': index }}><img src={src} alt="" fetchPriority="low" decoding="async" /></div>)}</div>
         <div className="nav-content"><p className="nav-caption">Explore the portfolio</p><nav aria-label="Sections">{[['Home', '#home'], ['About', '#about'], ['Experience', '#experience'], ['Moments', '#moments'], ['Explorations', '#work'], ['Contact', '#contact']].map(([label, href], index) => <a key={href} href={href} style={{ '--nav-index': index }} onClick={event => navigateFromMenu(event, href)}><span className="nav-word"><AnimatedLabel text={label} /></span></a>)}</nav><div className="nav-socials">{socials.map(social => <a key={social.name} href={social.href} target="_blank" rel="noreferrer"><AnimatedLabel text={social.name} /></a>)}</div></div>
       </div>
     </header>
