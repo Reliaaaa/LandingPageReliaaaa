@@ -191,7 +191,7 @@ html.menu-lock,html.menu-lock body{overflow:hidden!important;overscroll-behavior
 .nav-close{background:rgba(12,35,49,.96);color:#f6f7f8;border-color:rgba(139,209,226,.28);box-shadow:0 8px 30px #06131d66}.nav-close-icon{display:inline-flex;flex-direction:column;height:17px;overflow:hidden}.nav-close-icon svg{flex:none;transition:transform .45s cubic-bezier(.22,1,.36,1)}.nav-close:hover .nav-close-icon svg,.nav-close:focus-visible .nav-close-icon svg{transform:translateY(-17px)}
 @media(max-width:800px){.nav-art-shift:first-child{grid-row:auto}}
 @media(prefers-reduced-motion:reduce){.nav-close-icon svg{transition:none}}
-.nav-art-shift:nth-child(3) .nav-art-item{background:#0c2839}.nav-art-shift:nth-child(3) img{object-fit:contain}
+.nav-art-shift:nth-child(3) .nav-art-item{background:#0c2839}.nav-art-shift:nth-child(3) img{object-fit:cover}
 
 /* Keep the completed letter treatment unchanged when the intro class is removed. */
 @supports (-webkit-text-stroke:1px #fff){.hero h1{text-shadow:none}.hero h1 .hero-name-letter{-webkit-text-stroke:1px #f1f5f7;-webkit-text-fill-color:#f1f5f7;text-shadow:0 2px 24px rgba(3,20,31,.95),0 1px 5px rgba(3,20,31,.9)}}
